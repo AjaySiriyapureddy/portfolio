@@ -19,25 +19,25 @@ interface AdminData {
   lockedUntil: string | null;
 }
 
-function getDefaultAdmin(): AdminData {
-  const email = process.env.ADMIN_EMAIL;
-  const password = process.env.ADMIN_PASSWORD_HASH;
+function getDefaultWiner(): AdminData {
+  const email = process.env.WINER_EMAIL;
+  const password = process.env.WINER_PASSWORD_HASH;
 
   if (!email) {
-    throw new Error("FATAL: ADMIN_EMAIL env var is required");
+    throw new Error("FATAL: WINER_EMAIL env var is required");
   }
 
-  // If ADMIN_PASSWORD_HASH looks like a bcrypt hash, use it directly
-  // Otherwise, hash whatever is in ADMIN_PASSWORD for first-time setup
+  // If WINER_PASSWORD_HASH looks like a bcrypt hash, use it directly
+  // Otherwise, hash whatever is in WINER_PASSWORD for first-time setup
   let passwordHash: string;
   if (password && password.startsWith("$2")) {
     passwordHash = password;
   } else {
-    // Fallback to ADMIN_PASSWORD for initial setup, then hash it
-    const rawPassword = process.env.ADMIN_PASSWORD;
+    // Fallback to WINER_PASSWORD for initial setup, then hash it
+    const rawPassword = process.env.WINER_PASSWORD;
     if (!rawPassword) {
       throw new Error(
-        "FATAL: Either ADMIN_PASSWORD_HASH (bcrypt hash) or ADMIN_PASSWORD must be set"
+        "FATAL: Either WINER_PASSWORD_HASH (bcrypt hash) or WINER_PASSWORD must be set"
       );
     }
     passwordHash = bcrypt.hashSync(rawPassword, 12);
@@ -65,7 +65,7 @@ function readAdmin(): AdminData {
     // File corrupted or missing — regenerate
   }
   // First run: create from env
-  const admin = getDefaultAdmin();
+  const admin = getDefaultWiner();
   writeAdmin(admin);
   return admin;
 }
@@ -116,9 +116,9 @@ export function validatePasswordStrength(password: string): string | null {
 }
 
 /**
- * Verify admin credentials
+ * Verify winer credentials
  */
-export function verifyAdminCredentials(
+export function verifyWinerCredentials(
   email: string,
   password: string
 ): { success: boolean; error?: string } {
@@ -158,14 +158,14 @@ export function verifyAdminCredentials(
       writeAdmin(admin);
       return {
         success: false,
-        error: "Too many failed attempts. Account locked for 15 minutes.",
+        error: "Access suspended. Try again later.",
       };
     }
 
     writeAdmin(admin);
     return {
       success: false,
-      error: "Invalid credentials",
+      error: "Authentication failed",
     };
   }
 
@@ -279,9 +279,9 @@ export function resetPassword(
 }
 
 /**
- * Get admin email (for sending reset emails)
+ * Get winer email (for sending reset emails)
  */
-export function getAdminEmail(): string {
+export function getWinerEmail(): string {
   const admin = readAdmin();
   return admin.email;
 }

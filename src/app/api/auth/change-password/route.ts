@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
       admin = JSON.parse(raw);
     } catch {
       return NextResponse.json(
-        { error: "System error. Contact administrator." },
+        { error: "System error. Please try again later." },
         { status: 500 }
       );
     }
@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
     if (!bcrypt.compareSync(currentPassword, admin.passwordHash)) {
       logSecurityEvent("CHANGE_PASSWORD_WRONG_CURRENT", { ip });
 
-      // Alert: someone tried wrong password from admin session
+      // Alert: someone tried wrong password from authenticated session
       sendSuspiciousActivityAlert({
         event: "WRONG_PASSWORD_IN_SESSION",
         ip,

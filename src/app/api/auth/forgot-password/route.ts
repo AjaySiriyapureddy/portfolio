@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { rateLimit, logSecurityEvent, getClientIp } from "@/lib/security";
-import { generateResetToken, getAdminEmail } from "@/lib/password";
+import { generateResetToken, getWinerEmail } from "@/lib/password";
 import { sendPasswordResetEmail } from "@/lib/email";
 
 // Strict rate limit for forgot password — 3 requests per hour per IP
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
         const resetUrl = `${siteUrl}/reset-password?token=${result.token}`;
 
-        const adminEmail = getAdminEmail();
+        const adminEmail = getWinerEmail();
         await sendPasswordResetEmail(adminEmail, result.token, resetUrl);
 
         logSecurityEvent("RESET_TOKEN_GENERATED", { ip });

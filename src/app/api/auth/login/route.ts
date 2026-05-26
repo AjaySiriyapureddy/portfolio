@@ -6,7 +6,7 @@ import {
   logSecurityEvent,
   getClientIp,
 } from "@/lib/security";
-import { verifyAdminCredentials } from "@/lib/password";
+import { verifyWinerCredentials } from "@/lib/password";
 import { sendSuspiciousActivityAlert } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const result = verifyAdminCredentials(email, password);
+    const result = verifyWinerCredentials(email, password);
 
     if (!result.success) {
       logSecurityEvent("LOGIN_FAILED", { ip, email });
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
         sendSuspiciousActivityAlert({
           event: "ACCOUNT_LOCKOUT",
           ip,
-          description: `Account locked after multiple failed login attempts. Attempted email: ${email}`,
+          description: `Account locked after multiple failed login attempts. Attempted identifier: [redacted]`,
         }).catch(() => {});
       }
 

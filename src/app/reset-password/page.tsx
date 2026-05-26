@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
             This password reset link is missing or invalid. Please request a new one.
           </p>
           <Link
-            href="/s3cur3-panel"
+            href="/_x9k3"
             className="text-red-400 hover:text-red-300 text-sm font-[family-name:var(--font-mono)] transition-colors"
           >
             &larr; Back to login
@@ -96,7 +96,7 @@ export default function ResetPasswordPage() {
               {message}
             </p>
             <Link
-              href="/s3cur3-panel"
+              href="/_x9k3"
               className="text-red-400 hover:text-red-300 text-sm font-[family-name:var(--font-mono)] transition-colors"
             >
               $ cd /login &rarr;
@@ -176,7 +176,7 @@ export default function ResetPasswordPage() {
                 <li>&#8226; At least 1 lowercase letter (a-z)</li>
                 <li>&#8226; At least 1 number (0-9)</li>
                 <li>&#8226; At least 1 special character (!@#$%...)</li>
-                <li>&#8226; No common patterns (password, admin, etc.)</li>
+                <li>&#8226; No common patterns (password, qwerty, etc.)</li>
                 <li>&#8226; Must differ from current password</li>
               </ul>
             </div>

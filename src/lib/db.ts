@@ -30,7 +30,7 @@ const DEFAULTS: Record<string, string> = {
     name: "Ajaya Siriyapureddy",
     title: "Security Analyst & Researcher",
     bio: "Cybersecurity professional specializing in VAPT, Red Teaming, and secure development.",
-    email: process.env.PUBLIC_CONTACT_EMAIL || "ajaysiriyapu@gmail.com",
+    email: process.env.CONTACT_EMAIL || "ajaysiriyapu@gmail.com",
     location: "",
     avatar: "/avatar.png",
     social: { github: "", linkedin: "", twitter: "" },

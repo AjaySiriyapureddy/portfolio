@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 
 const FROM_NAME = "Portfolio Security";
 const FROM_EMAIL = process.env.SMTP_USER || "noreply@portfolio.local";
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || process.env.ADMIN_EMAIL || "";
+const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || process.env.WINER_EMAIL || "";
 
 // Unified email sender: tries SMTP first, logs to Firebase as backup
 async function sendEmail(options: {
@@ -107,7 +107,7 @@ export async function sendPasswordResetEmail(
 ): Promise<boolean> {
   return sendEmail({
     to: email,
-    subject: "Password Reset Request - Portfolio Admin",
+    subject: "Password Reset Request - Portfolio Security",
     type: "password_reset",
     text: `Password Reset Request\n\nReset your password: ${resetUrl}\n\nExpires in ${process.env.PASSWORD_RESET_EXPIRY_MINUTES || "15"} minutes.\nIf you didn't request this, ignore this email.`,
     html: `
@@ -115,7 +115,7 @@ export async function sendPasswordResetEmail(
         <div style="border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
           <h2 style="color: #ef4444; margin: 0;">Password Reset Request</h2>
         </div>
-        <p style="color: #d4d4d4;">A password reset was requested for your portfolio admin account.</p>
+        <p style="color: #d4d4d4;">A password reset was requested for your portfolio account.</p>
         <div style="margin: 25px 0; text-align: center;">
           <a href="${esc(resetUrl)}" style="display: inline-block; background: #dc2626; color: white; padding: 12px 30px; border-radius: 8px; text-decoration: none; font-weight: bold;">Reset Password</a>
         </div>
@@ -139,15 +139,15 @@ export async function sendPasswordResetEmail(
 export async function sendPasswordChangedNotification(email: string, ip: string): Promise<boolean> {
   return sendEmail({
     to: email,
-    subject: "[SECURITY ALERT] Password Changed - Portfolio Admin",
+    subject: "[SECURITY ALERT] Password Changed - Portfolio Security",
     type: "password_changed",
-    text: `Your portfolio admin password was changed.\n\nTime: ${new Date().toISOString()}\nIP: ${ip}\n\nIf this wasn't you, your account may be compromised. Request a password reset immediately.`,
+    text: `Your portfolio password was changed.\n\nTime: ${new Date().toISOString()}\nIP: ${ip}\n\nIf this wasn't you, your account may be compromised. Request a password reset immediately.`,
     html: `
       <div style="font-family: monospace; background: #0a0a0a; color: #e0e0e0; padding: 30px; border-radius: 8px; max-width: 600px;">
         <div style="border-bottom: 1px solid #ef4444; padding-bottom: 15px; margin-bottom: 20px;">
           <h2 style="color: #ef4444; margin: 0;">&#9888; Password Changed</h2>
         </div>
-        <p style="color: #d4d4d4;">Your portfolio admin password was successfully changed.</p>
+        <p style="color: #d4d4d4;">Your portfolio password was successfully changed.</p>
         <div style="margin: 20px 0; padding: 15px; background: #111; border: 1px solid #222; border-radius: 6px;">
           <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
             <tr><td style="color: #22c55e; padding: 5px 15px 5px 0;">Time:</td><td style="color: #e0e0e0;">${new Date().toISOString()}</td></tr>
@@ -189,7 +189,7 @@ export async function sendSuspiciousActivityAlert(details: {
             <tr><td style="color: #ef4444; padding: 5px 15px 5px 0; font-weight: bold;">Time:</td><td style="color: #e0e0e0;">${new Date().toISOString()}</td></tr>
           </table>
         </div>
-        <p style="color: #888; font-size: 11px; margin-top: 15px;">Review your admin panel and security logs for more details.</p>
+        <p style="color: #888; font-size: 11px; margin-top: 15px;">Review your security panel and logs for more details.</p>
       </div>
     `,
   });
@@ -227,7 +227,7 @@ export async function sendContentChangeNotification(details: {
       <div style="font-family: monospace; background: #0a0a0a; color: #e0e0e0; padding: 30px; border-radius: 8px; max-width: 600px;">
         <div style="border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
           <h2 style="color: ${color}; margin: 0;">${actionEmoji[details.action]} Content ${esc(details.action.charAt(0).toUpperCase() + details.action.slice(1))}</h2>
-          <p style="color: #666; font-size: 12px; margin: 5px 0 0 0;">Portfolio Admin Panel</p>
+          <p style="color: #666; font-size: 12px; margin: 5px 0 0 0;">Portfolio Winer Panel</p>
         </div>
         <div style="padding: 15px; background: #111; border: 1px solid #222; border-radius: 6px;">
           <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
@@ -238,7 +238,7 @@ export async function sendContentChangeNotification(details: {
             <tr><td style="color: ${color}; padding: 5px 15px 5px 0; font-weight: bold;">Time:</td><td style="color: #e0e0e0;">${new Date().toISOString()}</td></tr>
           </table>
         </div>
-        <p style="color: #888; font-size: 11px; margin-top: 15px;">This is an automated notification from your portfolio admin panel.</p>
+        <p style="color: #888; font-size: 11px; margin-top: 15px;">This is an automated notification from your portfolio winer panel.</p>
       </div>
     `,
   });

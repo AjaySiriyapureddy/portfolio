@@ -135,7 +135,7 @@ function SudoConfirm({
 export default function SecurePanel() {
   const [token, setToken] = useState("");
   const [isAuth, setIsAuth] = useState(false);
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+  const [loginForm, setLoginForm] = useState({ accessId: "", password: "" });
   const [loginError, setLoginError] = useState("");
   const [showForgot, setShowForgot] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
@@ -302,7 +302,7 @@ export default function SecurePanel() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginForm),
+        body: JSON.stringify({ email: loginForm.accessId, password: loginForm.password }),
       });
       const data = await res.json();
       if (!res.ok) { setLoginError(data.error); return; }
@@ -468,7 +468,7 @@ export default function SecurePanel() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <div className={`${mono} text-xs text-green-500/60 mb-4`}>
-              <span className="text-red-500">$</span> sudo authenticate --secure
+              <span className="text-red-500">$</span> sudo verify --access
             </div>
             <h1 className="text-2xl font-bold text-white">Secure Access</h1>
             <p className={`text-gray-600 text-xs mt-2 ${mono}`}>Authorized personnel only</p>
@@ -476,11 +476,12 @@ export default function SecurePanel() {
 
           <form onSubmit={handleLogin} className="bg-[#111] border border-gray-800/50 rounded-xl p-6 space-y-4">
             <div>
-              <label className={`block text-xs text-gray-500 mb-1.5 ${mono}`}>Identity</label>
+              <label className={`block text-xs text-gray-500 mb-1.5 ${mono}`}>Access ID</label>
               <input
-                type="email" required autoComplete="email"
-                value={loginForm.email}
-                onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
+                type="text" required autoComplete="off" maxLength={32} spellCheck={false}
+                placeholder="Enter your 16-character access ID"
+                value={loginForm.accessId}
+                onChange={(e) => setLoginForm({ ...loginForm, accessId: e.target.value })}
                 className={inputCls}
               />
             </div>
@@ -495,11 +496,11 @@ export default function SecurePanel() {
             </div>
             {loginError && (
               <p className={`text-red-400 text-xs ${mono}`}>
-                <span className="text-gray-600">[AUTH_FAIL]</span> {loginError}
+                <span className="text-gray-600">[DENIED]</span> Authentication failed. Verify your credentials.
               </p>
             )}
             <button type="submit" className={`w-full bg-red-600/90 hover:bg-red-600 text-white py-3 rounded-lg font-medium transition-colors text-sm ${mono}`}>
-              $ authenticate
+              $ verify_access
             </button>
             <div className="text-center">
               <button type="button" onClick={() => setShowForgot(true)} className={`text-gray-600 hover:text-red-400 text-xs ${mono} transition-colors`}>
@@ -520,9 +521,9 @@ export default function SecurePanel() {
                 <p className={`text-green-400 text-xs ${mono}`}>{forgotMsg}</p>
               ) : (
                 <form onSubmit={handleForgotPassword} className="space-y-3">
-                  <p className="text-gray-500 text-xs">Enter your registered email to receive a reset link.</p>
+                  <p className="text-gray-500 text-xs">Enter your registered identifier to receive a reset link.</p>
                   <input
-                    type="email" required placeholder="Registered email"
+                    type="text" required placeholder="Registered identifier" autoComplete="off" spellCheck={false}
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
                     className={inputCls}
@@ -542,7 +543,7 @@ export default function SecurePanel() {
     );
   }
 
-  // ─── ADMIN DASHBOARD ───
+  // ─── WINER DASHBOARD ───
   const tabs = ["projects", "skills", "ctf", "blog", "messages", "security"] as const;
 
   return (

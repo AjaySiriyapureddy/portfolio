@@ -520,9 +520,9 @@ export default function SecurePanel() {
                 <p className={`text-green-400 text-xs ${mono}`}>{forgotMsg}</p>
               ) : (
                 <form onSubmit={handleForgotPassword} className="space-y-3">
-                  <p className="text-gray-500 text-xs">Enter your admin email to receive a reset link.</p>
+                  <p className="text-gray-500 text-xs">Enter your registered email to receive a reset link.</p>
                   <input
-                    type="email" required placeholder="Admin email"
+                    type="email" required placeholder="Registered email"
                     value={forgotEmail}
                     onChange={(e) => setForgotEmail(e.target.value)}
                     className={inputCls}

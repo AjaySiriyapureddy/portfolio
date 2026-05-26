@@ -57,9 +57,17 @@ export default function BlogSection() {
                 {post.title}
               </h3>
 
-              <p className="text-gray-500 text-sm leading-relaxed mb-4">
-                {post.excerpt}
+              <p className="text-gray-500 text-sm leading-relaxed mb-3">
+                {post.excerpt.split(" ").length > 60
+                  ? post.excerpt.split(" ").slice(0, 60).join(" ") + "..."
+                  : post.excerpt}
               </p>
+              <a
+                href={`/blog/${post.id}`}
+                className="inline-block mb-4 text-xs font-[family-name:var(--font-mono)] text-red-400 hover:text-red-300 transition-colors"
+              >
+                [Read More →]
+              </a>
 
               <div className="flex flex-wrap gap-1.5">
                 {post.tags.map((tag) => (

@@ -71,6 +71,11 @@ function readAdmin(): AdminData {
 }
 
 function writeAdmin(data: AdminData): void {
+  // Ensure data directory exists (cloud/ephemeral FS support)
+  const dir = path.dirname(ADMIN_FILE);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
   const tempPath = ADMIN_FILE + ".tmp";
   fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), "utf-8");
   fs.renameSync(tempPath, ADMIN_FILE);

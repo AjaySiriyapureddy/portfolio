@@ -146,8 +146,16 @@ export default function Projects() {
                   {project.title}
                 </h3>
                 <p className="text-gray-500 text-sm leading-relaxed">
-                  {project.description}
+                  {project.description.split(" ").length > 60
+                    ? project.description.split(" ").slice(0, 60).join(" ") + "..."
+                    : project.description}
                 </p>
+                <a
+                  href={`/project/${project.id}`}
+                  className="inline-block mt-2 text-xs font-[family-name:var(--font-mono)] text-red-400 hover:text-red-300 transition-colors"
+                >
+                  [Read More →]
+                </a>
 
                 {(project.liveUrl || project.githubUrl) && (
                   <div className="flex gap-3 mt-4 pt-4 border-t border-gray-800/50">

@@ -68,7 +68,9 @@ export default function CTFSection() {
                   </span>
                 </div>
                 <p className="text-gray-500 text-xs leading-relaxed mb-2">
-                  {entry.description}
+                  {entry.description.split(" ").length > 60
+                    ? entry.description.split(" ").slice(0, 60).join(" ") + "..."
+                    : entry.description}
                 </p>
                 <div className="flex items-center gap-2 mt-3">
                   <span className="text-[10px] font-[family-name:var(--font-mono)] text-gray-600 bg-gray-800/50 px-2 py-0.5 rounded">

@@ -33,6 +33,8 @@ export async function POST(req: NextRequest) {
     }
 
     db.skills.create(skill);
+    logSecurityEvent("SKILL_CREATED", { id: skill.id, ip: getClientIp(req) });
+    sendContentChangeNotification({ action: "created", contentType: "Skill", title: skill.name, ip: getClientIp(req) }).catch(() => {});
     return NextResponse.json(skill, { status: 201 });
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
@@ -53,5 +55,7 @@ export async function DELETE(req: NextRequest) {
   if (!deleted) {
     return NextResponse.json({ error: "Skill not found" }, { status: 404 });
   }
+  logSecurityEvent("SKILL_DELETED", { id, ip: getClientIp(req) });
+  sendContentChangeNotification({ action: "deleted", contentType: "Skill", title: id, ip: getClientIp(req) }).catch(() => {});
   return NextResponse.json({ success: true });
 }

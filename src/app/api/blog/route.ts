@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
 
     db.blog.create(post);
     logSecurityEvent("BLOG_CREATED", { id: post.id, ip: getClientIp(req) });
+    sendContentChangeNotification({ action: "created", contentType: "Blog Post", title: post.title, ip: getClientIp(req) }).catch(() => {});
     return NextResponse.json(post, { status: 201 });
   } catch {
     return NextResponse.json(
@@ -94,6 +95,7 @@ export async function PUT(req: NextRequest) {
     }
 
     logSecurityEvent("BLOG_UPDATED", { id, ip: getClientIp(req) });
+    sendContentChangeNotification({ action: "updated", contentType: "Blog Post", title: (data.title as string) || id, ip: getClientIp(req) }).catch(() => {});
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
@@ -116,5 +118,6 @@ export async function DELETE(req: NextRequest) {
   }
 
   logSecurityEvent("BLOG_DELETED", { id, ip: getClientIp(req) });
+  sendContentChangeNotification({ action: "deleted", contentType: "Blog Post", title: id, ip: getClientIp(req) }).catch(() => {});
   return NextResponse.json({ success: true });
 }

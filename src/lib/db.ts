@@ -3,6 +3,11 @@ import path from "path";
 
 const dataDir = path.join(process.cwd(), "data");
 
+// Ensure data directory exists on startup (critical for Render/cloud deploys)
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
 // Allowlist of valid data files (CWE-22 path traversal prevention)
 const VALID_FILES = new Set([
   "projects.json",
@@ -14,11 +19,34 @@ const VALID_FILES = new Set([
   "blog.json",
 ]);
 
+// Default empty data for each file type
+const DEFAULTS: Record<string, string> = {
+  "projects.json": "[]",
+  "skills.json": "[]",
+  "messages.json": "[]",
+  "ctf.json": "[]",
+  "blog.json": "[]",
+  "profile.json": JSON.stringify({
+    name: "Ajaya Siriyapureddy",
+    title: "Security Analyst & Researcher",
+    bio: "Cybersecurity professional specializing in VAPT, Red Teaming, and secure development.",
+    email: process.env.PUBLIC_CONTACT_EMAIL || "ajaysiriyapu@gmail.com",
+    location: "",
+    avatar: "/avatar.png",
+    social: { github: "", linkedin: "", twitter: "" },
+    resumeUrl: "",
+  }, null, 2),
+};
+
 function readJson<T>(filename: string): T {
   if (!VALID_FILES.has(filename) || filename.includes("..") || filename.includes("/") || filename.includes("\\")) {
     throw new Error("Invalid data file access");
   }
   const filePath = path.join(dataDir, filename);
+  // Auto-create missing data files with defaults (cloud/ephemeral FS support)
+  if (!fs.existsSync(filePath) && DEFAULTS[filename]) {
+    fs.writeFileSync(filePath, DEFAULTS[filename], "utf-8");
+  }
   const raw = fs.readFileSync(filePath, "utf-8");
   return JSON.parse(raw) as T;
 }

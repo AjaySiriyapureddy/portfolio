@@ -50,16 +50,21 @@ export async function POST(req: NextRequest) {
 
     logSecurityEvent("FORGOT_PASSWORD_REQUEST", { ip, email: "[redacted]" });
 
-    const result = generateResetToken(email);
+    try {
+      const result = generateResetToken(email);
 
-    if (result.token) {
-      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
-      const resetUrl = `${siteUrl}/reset-password?token=${result.token}`;
+      if (result.token) {
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3001";
+        const resetUrl = `${siteUrl}/reset-password?token=${result.token}`;
 
-      const adminEmail = getAdminEmail();
-      await sendPasswordResetEmail(adminEmail, result.token, resetUrl);
+        const adminEmail = getAdminEmail();
+        await sendPasswordResetEmail(adminEmail, result.token, resetUrl);
 
-      logSecurityEvent("RESET_TOKEN_GENERATED", { ip });
+        logSecurityEvent("RESET_TOKEN_GENERATED", { ip });
+      }
+    } catch (err) {
+      // Log but don't expose internal errors (still return generic response)
+      console.error("[FORGOT_PASSWORD] Internal error:", err);
     }
 
     return genericResponse;

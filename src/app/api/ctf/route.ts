@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
 
     db.ctf.create(entry);
     logSecurityEvent("CTF_CREATED", { id: entry.id, ip: getClientIp(req) });
+    sendContentChangeNotification({ action: "created", contentType: "CTF Challenge", title: entry.name, ip: getClientIp(req) }).catch(() => {});
     return NextResponse.json(entry, { status: 201 });
   } catch {
     return NextResponse.json(
@@ -82,6 +83,7 @@ export async function PUT(req: NextRequest) {
     }
 
     logSecurityEvent("CTF_UPDATED", { id, ip: getClientIp(req) });
+    sendContentChangeNotification({ action: "updated", contentType: "CTF Challenge", title: (data.name as string) || id, ip: getClientIp(req) }).catch(() => {});
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
@@ -104,5 +106,6 @@ export async function DELETE(req: NextRequest) {
   }
 
   logSecurityEvent("CTF_DELETED", { id, ip: getClientIp(req) });
+  sendContentChangeNotification({ action: "deleted", contentType: "CTF Challenge", title: id, ip: getClientIp(req) }).catch(() => {});
   return NextResponse.json({ success: true });
 }

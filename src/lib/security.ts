@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
-// SECURITY: Fail hard if JWT_SECRET is not configured
-const _jwtSecret = process.env.JWT_SECRET;
-if (!_jwtSecret || _jwtSecret.length < 32) {
-  throw new Error(
-    "FATAL: JWT_SECRET environment variable must be set and at least 32 characters long."
-  );
+// SECURITY: Lazy JWT secret check — validates at first use, not at import time
+// This prevents build-time crashes on cloud platforms (Render, Vercel) where
+// env vars are only available at runtime, not during the build step.
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error(
+      "FATAL: JWT_SECRET environment variable must be set and at least 32 characters long."
+    );
+  }
+  return secret;
 }
-const JWT_SECRET: string = _jwtSecret;
 
 // LRU-style rate limiter with max entries to prevent memory exhaustion (CWE-400)
 const MAX_RATE_ENTRIES = 10000;
@@ -179,7 +183,7 @@ export function validateEmail(email: string): boolean {
 }
 
 export function generateToken(payload: object): string {
-  return jwt.sign(payload, JWT_SECRET, {
+  return jwt.sign(payload, getJwtSecret(), {
     expiresIn: "2h", // Shorter expiry (was 24h)
     algorithm: "HS256", // Explicit algorithm to prevent confusion attacks
   });
@@ -187,7 +191,7 @@ export function generateToken(payload: object): string {
 
 export function verifyToken(token: string): { email: string; iat: number; exp: number } | null {
   try {
-    return jwt.verify(token, JWT_SECRET, {
+    return jwt.verify(token, getJwtSecret(), {
       algorithms: ["HS256"], // Only accept HS256
     }) as { email: string; iat: number; exp: number };
   } catch {

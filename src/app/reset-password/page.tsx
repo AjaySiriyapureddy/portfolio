@@ -67,7 +67,7 @@ export default function ResetPasswordPage() {
             This password reset link is missing or invalid. Please request a new one.
           </p>
           <Link
-            href="/_x9k3"
+            href="/x9k3"
             className="text-red-400 hover:text-red-300 text-sm font-[family-name:var(--font-mono)] transition-colors"
           >
             &larr; Back to login
@@ -96,7 +96,7 @@ export default function ResetPasswordPage() {
               {message}
             </p>
             <Link
-              href="/_x9k3"
+              href="/x9k3"
               className="text-red-400 hover:text-red-300 text-sm font-[family-name:var(--font-mono)] transition-colors"
             >
               $ cd /login &rarr;

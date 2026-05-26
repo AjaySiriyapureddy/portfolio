@@ -10,6 +10,13 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20",
+    "@types/nodemailer": "^8.0.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/uuid": "^10.0.0",
     "bcryptjs": "^3.0.3",
     "firebase": "^12.13.0",
     "jsonwebtoken": "^9.0.3",
@@ -19,18 +26,11 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "tailwindcss": "^4.3.0",
+    "typescript": "^5",
     "uuid": "^14.0.0"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20",
-    "@types/nodemailer": "^8.0.0",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "@types/uuid": "^10.0.0",
     "eslint": "^9",
-    "eslint-config-next": "16.2.6",
-    "typescript": "^5"
+    "eslint-config-next": "16.2.6"
   }
 }

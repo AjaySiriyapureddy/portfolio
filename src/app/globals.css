@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #e0e0e0;
+}
+
+::selection {
+  background-color: rgba(220, 38, 38, 0.4);
+  color: #00ff41;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1a3a1a;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2a5a2a;
+}
+
+/* Terminal cursor blink */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+
+/* Glitch effect */
+@keyframes glitch {
+  0% { text-shadow: 2px 0 #ff0000, -2px 0 #00ff41; }
+  20% { text-shadow: -2px 0 #ff0000, 2px 0 #00ff41; }
+  40% { text-shadow: 2px 2px #ff0000, -2px -2px #00ff41; }
+  60% { text-shadow: -2px -2px #ff0000, 2px 2px #00ff41; }
+  80% { text-shadow: 2px -1px #ff0000, -2px 1px #00ff41; }
+  100% { text-shadow: 0 0 transparent; }
+}
+
+.glitch-text:hover {
+  animation: glitch 0.4s ease-in-out;
+}
+
+/* Hover glow cards */
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(34, 197, 94, 0.1); }
+  50% { border-color: rgba(34, 197, 94, 0.4); }
+}
+
+/* Pulse animation for interactive elements */
+@keyframes subtlePulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Fade in from below */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Section reveal animation */
+section {
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+/* Card hover effects */
+.group:hover {
+  transform: translateY(-2px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Smooth hover glow for cards */
+[class*="rounded-xl"][class*="border"] {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+[class*="rounded-xl"][class*="border"]:hover {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.05), 0 0 40px rgba(239, 68, 68, 0.03);
+}
+
+/* Typing cursor for hero */
+@keyframes typingCursor {
+  0%, 100% { border-right-color: #22c55e; }
+  50% { border-right-color: transparent; }
+}
+
+/* Scanline overlay effect */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Red glow hover for buttons */
+button[class*="bg-red"]:hover {
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+}
+
+/* Green glow hover for green buttons */
+button[class*="bg-green"]:hover {
+  box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+}
+
+/* Link underline animation */
+a[class*="hover:text-green"] {
+  position: relative;
+}
+
+/* Tag hover effect */
+span[class*="rounded"][class*="text-green"]:hover {
+  background-color: rgba(34, 197, 94, 0.2) !important;
+  transition: background-color 0.3s ease;
+}
+
+/* Progress bar animation */
+@keyframes fillBar {
+  from { width: 0; }
+}
+
+[class*="bg-green-500"][class*="rounded-full"][class*="h-full"] {
+  animation: fillBar 1s ease-out;
+}
+
+[class*="bg-red-500"][class*="rounded-full"][class*="h-full"] {
+  animation: fillBar 1s ease-out;
+}

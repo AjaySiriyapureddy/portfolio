@@ -1,0 +1,89 @@
+[
+  {
+    "id": "1",
+    "title": "BD Tracker",
+    "description": "Business Development tracking system for managing leads, proposals, and client interactions. Features role-based access control, real-time analytics dashboard, and automated reporting.",
+    "image": "/projects/bdtracker.svg",
+    "tags": [
+      "Business Intelligence",
+      "CRM",
+      "Analytics",
+      "Role-Based Access"
+    ],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2025-06-15"
+  },
+  {
+    "id": "2",
+    "title": "CRM - ODOO Admin",
+    "description": "Comprehensive CRM administration and customization on ODOO platform. Custom modules for sales pipeline management, customer segmentation, and automated workflows.",
+    "image": "/projects/crm.svg",
+    "tags": [
+      "ODOO",
+      "CRM",
+      "Python",
+      "ERP",
+      "Custom Modules"
+    ],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2025-08-20"
+  },
+  {
+    "id": "3",
+    "title": "Remote Employees Attendance App",
+    "description": "Remote workforce attendance system with image capturing, geo-tagging, timestamp verification, latitude/longitude tracking, and role-based access control for managers and employees.",
+    "image": "/projects/attendance.svg",
+    "tags": [
+      "Geo-Tagging",
+      "Image Capture",
+      "GPS Tracking",
+      "Role-Based",
+      "Real-Time"
+    ],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2026-01-10"
+  },
+  {
+    "id": "dced0fd6-0fdd-4d42-ba40-275f6cf99d4d",
+    "title": "Ajay Testing Project",
+    "description": "at can bug bounty hunters get uses by using this What can bug Cybersecuirty researchers get uses by using this Why we need to use this alternate for this tool How to learn this tool what are the benifits can get I needs to start learing abo",
+    "image": "/projects/default.svg",
+    "tags": [
+      "VAPT",
+      "CTF",
+      "CYber",
+      "Raminfo",
+      "Tenders",
+      "BG",
+      "New Skills",
+      "BGV"
+    ],
+    "liveUrl": "https://www.linkedin.com/in/ajay-siriyapureddy-a69749246/",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2026-05-26"
+  },
+  {
+    "id": "dbe3b309-b82f-441a-b0e0-b355d3806263",
+    "title": "Burpsuit",
+    "description": "This desire has drastically influenced my life.\n\nAs a teenager, I became obsessed with fitness. Then, I wanted to absorb as much knowledge as possible. Then I wanted to be free, so I failed at various business models until I finally made one work. I’ve had various spiritual and philosophical stints that I believe have helped me see “superficial pursuits” like money and fitness in a completely different light than the average person.\n\nOver the past 15 years, I’ve researched the depths of psychology, personal development, philosophy, social dynamics, technology, the internet, startups, money, religion, and meaning.",
+    "image": "/projects/default.svg",
+    "tags": [
+      "Testing",
+      "Intersept",
+      "Log Monitering",
+      "Tools",
+      "Recon"
+    ],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": false,
+    "createdAt": "2026-05-26"
+  }
+]

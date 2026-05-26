@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "name": "Web Exploitation",
+    "description": "SQL injection, XSS, SSRF, IDOR, file upload bypass, and authentication flaws in web challenges.",
+    "difficulty": "Advanced",
+    "category": "Offensive",
+    "platform": "HackTheBox",
+    "createdAt": "2026-03-15"
+  },
+  {
+    "id": "2",
+    "name": "Cryptography",
+    "description": "Breaking weak encryption, RSA attacks, hash collisions, padding oracle attacks, and custom cipher analysis.",
+    "difficulty": "Intermediate",
+    "category": "Crypto",
+    "platform": "PicoCTF",
+    "createdAt": "2026-02-20"
+  },
+  {
+    "id": "3",
+    "name": "Reverse Engineering",
+    "description": "Binary analysis, malware unpacking, anti-debugging techniques, and firmware reverse engineering.",
+    "difficulty": "Advanced",
+    "category": "Reversing",
+    "platform": "CTFtime",
+    "createdAt": "2026-01-10"
+  },
+  {
+    "id": "4",
+    "name": "Privilege Escalation",
+    "description": "Linux/Windows privesc, kernel exploits, SUID abuse, misconfigured services, and container breakouts.",
+    "difficulty": "Advanced",
+    "category": "Offensive",
+    "platform": "TryHackMe",
+    "createdAt": "2025-12-05"
+  },
+  {
+    "id": "5",
+    "name": "OSINT",
+    "description": "Open source intelligence gathering, metadata analysis, social media reconnaissance, and digital footprinting.",
+    "difficulty": "Beginner",
+    "category": "Recon",
+    "platform": "TryHackMe",
+    "createdAt": "2025-11-20"
+  },
+  {
+    "id": "6",
+    "name": "Network Forensics",
+    "description": "PCAP analysis, traffic reconstruction, protocol dissection, and covert channel detection.",
+    "difficulty": "Intermediate",
+    "category": "Forensics",
+    "platform": "HackTheBox",
+    "createdAt": "2025-10-15"
+  }
+]

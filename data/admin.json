@@ -1,0 +1,10 @@
+{
+  "email": "vluninf0o@gmail.com",
+  "passwordHash": "$2b$12$CfB8I2t6W95B9xE/tFRYaeA8nXUlzOm8CZ5O/12lFKyMYDkBIICMO",
+  "resetToken": "51f1a2371d20489fc6aa456971e1e8ad9ee5b5facba528650bc5e742c9de0786",
+  "resetTokenExpiry": "2026-05-25T15:26:07.939Z",
+  "resetTokenUsed": false,
+  "lastPasswordChange": "2026-05-25T15:01:17.460Z",
+  "failedAttempts": 0,
+  "lockedUntil": null
+}

@@ -1,23 +1,46 @@
 import nodemailer from "nodemailer";
+import type { Transporter } from "nodemailer";
 import { queueEmail } from "@/lib/firebase";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: parseInt(process.env.SMTP_PORT || "587", 10),
-  secure: process.env.SMTP_SECURE === "true",
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  tls: {
-    rejectUnauthorized: true,
-    minVersion: "TLSv1.2",
-  },
-});
+// Lazy transporter — created on first use so Render env vars are guaranteed available
+let _transporter: Transporter | null = null;
+
+function getTransporter(): Transporter | null {
+  if (_transporter) return _transporter;
+
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  if (!user || !pass) {
+    console.warn("[EMAIL] SMTP_USER or SMTP_PASS not set — emails will not be sent");
+    return null;
+  }
+
+  _transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || "smtp.gmail.com",
+    port: parseInt(process.env.SMTP_PORT || "587", 10),
+    secure: process.env.SMTP_SECURE === "true",
+    auth: { user, pass },
+    tls: {
+      rejectUnauthorized: true,
+      minVersion: "TLSv1.2",
+    },
+  });
+
+  console.log(`[EMAIL] SMTP transporter initialized for ${user}`);
+  return _transporter;
+}
 
 const FROM_NAME = "Portfolio Security";
-const FROM_EMAIL = process.env.SMTP_USER || "noreply@portfolio.local";
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || process.env.WINER_EMAIL || "";
+
+// Lazy getters — evaluated at call time, not module load
+function getFromEmail(): string {
+  return process.env.SMTP_USER || "noreply@portfolio.local";
+}
+
+function getNotifyEmail(): string {
+  return process.env.NOTIFY_EMAIL || process.env.WINER_EMAIL || "";
+}
 
 // Unified email sender: tries SMTP first, logs to Firebase as backup
 async function sendEmail(options: {
@@ -37,24 +60,29 @@ async function sendEmail(options: {
     type: options.type,
   }).catch(() => {});
 
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+  const transporter = getTransporter();
+  if (!transporter) {
     console.log(`[EMAIL] SMTP not configured. Type: ${options.type}, Subject: ${options.subject}`);
     return false;
   }
 
   try {
-    await transporter.sendMail({
-      from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
+    const info = await transporter.sendMail({
+      from: `"${FROM_NAME}" <${getFromEmail()}>`,
       to: sanitizeEmailHeader(options.to),
       replyTo: options.replyTo ? sanitizeEmailHeader(options.replyTo) : undefined,
       subject: sanitizeEmailHeader(options.subject),
       text: options.text,
       html: options.html,
     });
-    console.log(`[EMAIL] Sent: ${options.type} to ${options.to}`);
+    console.log(`[EMAIL] Sent: ${options.type} to ${options.to} (messageId: ${info.messageId})`);
     return true;
   } catch (error) {
     console.error(`[EMAIL] Failed (${options.type}):`, error);
+    // Reset transporter on auth/connection errors so it retries fresh
+    if (error instanceof Error && (error.message.includes("auth") || error.message.includes("ECONNREFUSED"))) {
+      _transporter = null;
+    }
     return false;
   }
 }
@@ -68,10 +96,14 @@ export async function sendContactNotification(data: {
   subject: string;
   message: string;
 }): Promise<boolean> {
-  if (!NOTIFY_EMAIL) return false;
+  const notifyEmail = getNotifyEmail();
+  if (!notifyEmail) {
+    console.warn("[EMAIL] NOTIFY_EMAIL/WINER_EMAIL not set — contact notification skipped");
+    return false;
+  }
 
   return sendEmail({
-    to: NOTIFY_EMAIL,
+    to: notifyEmail,
     replyTo: data.email,
     subject: `[Portfolio Contact] ${data.subject}`,
     type: "contact_notification",
@@ -169,10 +201,11 @@ export async function sendSuspiciousActivityAlert(details: {
   ip: string;
   description: string;
 }): Promise<boolean> {
-  if (!NOTIFY_EMAIL) return false;
+  const notifyEmail = getNotifyEmail();
+  if (!notifyEmail) return false;
 
   return sendEmail({
-    to: NOTIFY_EMAIL,
+    to: notifyEmail,
     subject: `[SECURITY ALERT] ${details.event} - Portfolio`,
     type: "suspicious_activity",
     text: `Suspicious Activity Detected\n\nEvent: ${details.event}\nIP: ${details.ip}\nDescription: ${details.description}\nTime: ${new Date().toISOString()}`,
@@ -204,7 +237,8 @@ export async function sendContentChangeNotification(details: {
   title: string;
   ip: string;
 }): Promise<boolean> {
-  if (!NOTIFY_EMAIL) return false;
+  const notifyEmail = getNotifyEmail();
+  if (!notifyEmail) return false;
 
   const actionColors: Record<string, string> = {
     created: "#22c55e",
@@ -219,7 +253,7 @@ export async function sendContentChangeNotification(details: {
   const color = actionColors[details.action] || "#e0e0e0";
 
   return sendEmail({
-    to: NOTIFY_EMAIL,
+    to: notifyEmail,
     subject: `[Portfolio] ${details.contentType} ${details.action}: ${details.title}`,
     type: "content_change",
     text: `Content Change Notification\n\nAction: ${details.action.toUpperCase()}\nType: ${details.contentType}\nTitle: ${details.title}\nIP: ${details.ip}\nTime: ${new Date().toISOString()}`,

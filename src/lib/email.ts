@@ -16,15 +16,21 @@ function getTransporter(): ReturnType<typeof nodemailer.createTransport> | null 
     return null;
   }
 
+  const port = parseInt(process.env.SMTP_PORT || "465", 10);
+  const isSecure = port === 465;
+
   _transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || "smtp.gmail.com",
-    port: parseInt(process.env.SMTP_PORT || "587", 10),
-    secure: process.env.SMTP_SECURE === "true",
+    port,
+    secure: isSecure,
     auth: { user, pass },
     tls: {
       rejectUnauthorized: true,
       minVersion: "TLSv1.2",
     },
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
   });
 
   console.log(`[EMAIL] SMTP transporter initialized for ${user}`);

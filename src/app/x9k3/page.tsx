@@ -171,106 +171,14 @@ export default function SecurePanel() {
     title: "", excerpt: "", content: "", tags: "", readTime: "5 min", published: true,
   });
 
-  // ─── SESSION MANAGEMENT with expiry + idle timeout ───
-  useEffect(() => {
-    const saved = sessionStorage.getItem("_st");
-    const expiry = sessionStorage.getItem("_st_exp");
-
-    // Client-side expiry check first (fast, no network)
-    if (saved && expiry) {
-      const expiryMs = parseInt(expiry, 10);
-      if (Date.now() > expiryMs) {
-        // Token expired client-side
-        sessionStorage.removeItem("_st");
-        sessionStorage.removeItem("_st_exp");
-        sessionStorage.removeItem("_st_idle");
-        return;
-      }
-    }
-
-    // Idle timeout check (30 min inactivity = auto-logout)
-    const lastActivity = sessionStorage.getItem("_st_idle");
-    if (lastActivity) {
-      const idleMs = Date.now() - parseInt(lastActivity, 10);
-      if (idleMs > 30 * 60 * 1000) {
-        sessionStorage.removeItem("_st");
-        sessionStorage.removeItem("_st_exp");
-        sessionStorage.removeItem("_st_idle");
-        return;
-      }
-    }
-
-    if (saved) {
-      fetch("/api/auth/verify", {
-        headers: { Authorization: `Bearer ${saved}` },
-      })
-        .then((r) => r.json())
-        .then((data) => {
-          if (data.valid) {
-            setToken(saved);
-            setIsAuth(true);
-            sessionStorage.setItem("_st_idle", String(Date.now()));
-          } else {
-            sessionStorage.removeItem("_st");
-            sessionStorage.removeItem("_st_exp");
-            sessionStorage.removeItem("_st_idle");
-          }
-        })
-        .catch(() => {
-          sessionStorage.removeItem("_st");
-          sessionStorage.removeItem("_st_exp");
-          sessionStorage.removeItem("_st_idle");
-        });
-    }
-  }, []);
-
-  // Auto-logout when navigating away from panel (security: no persistent sessions)
-  useEffect(() => {
-    if (!isAuth) return;
-
-    const clearSession = () => {
-      sessionStorage.removeItem("_st");
-      sessionStorage.removeItem("_st_exp");
-      sessionStorage.removeItem("_st_idle");
-    };
-
-    // Clear session when tab/window is closed or navigating away
-    window.addEventListener("beforeunload", clearSession);
-
-    return () => {
-      window.removeEventListener("beforeunload", clearSession);
-    };
-  }, [isAuth]);
-
-  // Periodic session validation (every 5 min) + idle tracker
+  // ─── SESSION: in-memory only (no storage = every visit requires fresh login) ───
+  // Token lives only in React state. Close tab / refresh / navigate away = logged out.
+  // Periodic revalidation ensures server-side expiry is respected.
   useEffect(() => {
     if (!isAuth || !token) return;
 
-    // Track user activity for idle timeout
-    const updateActivity = () => {
-      sessionStorage.setItem("_st_idle", String(Date.now()));
-    };
-    window.addEventListener("click", updateActivity);
-    window.addEventListener("keydown", updateActivity);
-    window.addEventListener("scroll", updateActivity);
-
-    // Revalidate token every 5 minutes
+    // Revalidate token every 5 minutes against server
     const interval = setInterval(() => {
-      // Check idle timeout (30 min)
-      const lastActivity = sessionStorage.getItem("_st_idle");
-      if (lastActivity && Date.now() - parseInt(lastActivity, 10) > 30 * 60 * 1000) {
-        handleLogout();
-        return;
-      }
-
-      // Check client-side expiry
-      const expiry = sessionStorage.getItem("_st_exp");
-      if (expiry && Date.now() > parseInt(expiry, 10)) {
-        handleLogout();
-        return;
-      }
-
-      // Server-side revalidation
       fetch("/api/auth/verify", {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -281,12 +189,7 @@ export default function SecurePanel() {
         .catch(() => {});
     }, 5 * 60 * 1000);
 
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener("click", updateActivity);
-      window.removeEventListener("keydown", updateActivity);
-      window.removeEventListener("scroll", updateActivity);
-    };
+    return () => clearInterval(interval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuth, token]);
 
@@ -326,10 +229,6 @@ export default function SecurePanel() {
       if (!res.ok) { setLoginError(data.error); return; }
       setToken(data.token);
       setIsAuth(true);
-      sessionStorage.setItem("_st", data.token);
-      // Store expiry: 2h from now
-      sessionStorage.setItem("_st_exp", String(Date.now() + 2 * 60 * 60 * 1000));
-      sessionStorage.setItem("_st_idle", String(Date.now()));
     } catch {
       setLoginError("Network error");
     }
@@ -338,9 +237,6 @@ export default function SecurePanel() {
   const handleLogout = () => {
     setToken("");
     setIsAuth(false);
-    sessionStorage.removeItem("_st");
-    sessionStorage.removeItem("_st_exp");
-    sessionStorage.removeItem("_st_idle");
   };
 
   // === CRUD operations ===
@@ -984,7 +880,7 @@ export default function SecurePanel() {
                 {[
                   ["JWT Token Expiry", "2 hours (auto-logout)"],
                   ["Idle Timeout", "30 min inactivity → session killed"],
-                  ["Token Storage", "sessionStorage (tab-scoped)"],
+                  ["Token Storage", "In-memory only (no persistence)"],
                   ["Session Revalidation", "Server check every 5 min"],
                   ["Brute Force Protection", "5 attempts / 15min lockout"],
                   ["API Rate Limiting", "60 req / 15min window"],

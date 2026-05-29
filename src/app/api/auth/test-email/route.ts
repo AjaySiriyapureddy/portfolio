@@ -32,10 +32,13 @@ export async function GET(req: NextRequest) {
 
   // Try SMTP connection
   try {
+    const port = parseInt(process.env.SMTP_PORT || "465", 10);
+    const isSecure = port === 465;
+
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || "smtp.gmail.com",
-      port: parseInt(process.env.SMTP_PORT || "587", 10),
-      secure: process.env.SMTP_SECURE === "true",
+      port,
+      secure: isSecure,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -44,7 +47,13 @@ export async function GET(req: NextRequest) {
         rejectUnauthorized: true,
         minVersion: "TLSv1.2",
       },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
     });
+
+    diagnostics.smtp_port = port;
+    diagnostics.smtp_secure = isSecure;
 
     // Verify SMTP connection
     await transporter.verify();

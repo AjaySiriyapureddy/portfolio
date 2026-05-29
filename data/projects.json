@@ -16,6 +16,22 @@
     "createdAt": "2025-06-15"
   },
   {
+    "id": "1",
+    "title": "Sriman BD Tracker",
+    "description": "Business Development tracking system for managing leads, proposals, and client interactions. Features role-based access control, real-time analytics dashboard, and automated reporting.",
+    "image": "/projects/bdtracker.svg",
+    "tags": [
+      "Business Intelligence",
+      "CRM",
+      "Analytics",
+      "Role-Based Access"
+    ],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2025-06-15"
+  },
+  {
     "id": "2",
     "title": "CRM - ODOO Admin",
     "description": "Comprehensive CRM administration and customization on ODOO platform. Custom modules for sales pipeline management, customer segmentation, and automated workflows.",
@@ -85,5 +101,19 @@
     "githubUrl": "",
     "featured": false,
     "createdAt": "2026-05-26"
+  },
+  {
+    "id": "250aaa9b-704a-4d40-a915-f2b2d8c997ce",
+    "title": "26.05.2026",
+    "description": "kasdkfhshfsdhf",
+    "image": "/projects/default.svg",
+    "tags": [
+      "pen",
+      "paper"
+    ],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": false,
+    "createdAt": "2026-05-29"
   }
 ]

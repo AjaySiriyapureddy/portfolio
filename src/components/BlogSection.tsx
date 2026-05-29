@@ -23,7 +23,7 @@ export default function BlogSection() {
 
   return (
     <section id="blog" className="py-24 px-4 bg-[#0a0a0a]/75">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <div className="font-[family-name:var(--font-mono)] text-xs text-green-500/60 mb-3">
             {`// ===== SECURITY_BLOG =====`}
@@ -37,7 +37,7 @@ export default function BlogSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {posts.map((post) => (
             <article
               key={post.id}

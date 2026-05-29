@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
       liveUrl: sanitizeInput(liveUrl),
       githubUrl: sanitizeInput(githubUrl),
       featured: Boolean(body.featured),
-      createdAt: new Date().toISOString().split("T")[0],
+      createdAt: new Date().toISOString(),
     };
 
     if (!project.title || !project.description) {

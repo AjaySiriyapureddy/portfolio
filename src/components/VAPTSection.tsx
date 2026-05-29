@@ -119,7 +119,7 @@ export default function VAPTSection() {
 
   return (
     <section id="vapt" className="py-24 px-4 bg-[#0a0a0a]/75">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <div className="font-[family-name:var(--font-mono)] text-xs text-red-500/60 mb-3">
             {`// ===== SECURITY_SERVICES =====`}
@@ -133,7 +133,7 @@ export default function VAPTSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {services.map((service) => (
             <div
               key={service.title}

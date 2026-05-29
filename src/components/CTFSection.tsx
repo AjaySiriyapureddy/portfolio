@@ -30,7 +30,7 @@ export default function CTFSection() {
 
   return (
     <section id="ctf" className="py-24 px-4 bg-[#080808]/75">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <div className="font-[family-name:var(--font-mono)] text-xs text-green-500/60 mb-3">
             {`// ===== CTF_WRITEUPS =====`}
@@ -43,7 +43,7 @@ export default function CTFSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {entries.map((entry) => {
             const color = diffColor(entry.difficulty);
             return (

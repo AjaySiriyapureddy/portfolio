@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       tags: (body.tags || []).map((t: string) => sanitizeInput(t.trim())),
       readTime: sanitizeInput((body.readTime || "5 min").trim()),
       published: Boolean(body.published),
-      createdAt: new Date().toISOString().split("T")[0],
+      createdAt: new Date().toISOString(),
     };
 
     if (!post.title || !post.excerpt) {

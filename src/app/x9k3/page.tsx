@@ -224,6 +224,24 @@ export default function SecurePanel() {
     }
   }, []);
 
+  // Auto-logout when navigating away from panel (security: no persistent sessions)
+  useEffect(() => {
+    if (!isAuth) return;
+
+    const clearSession = () => {
+      sessionStorage.removeItem("_st");
+      sessionStorage.removeItem("_st_exp");
+      sessionStorage.removeItem("_st_idle");
+    };
+
+    // Clear session when tab/window is closed or navigating away
+    window.addEventListener("beforeunload", clearSession);
+
+    return () => {
+      window.removeEventListener("beforeunload", clearSession);
+    };
+  }, [isAuth]);
+
   // Periodic session validation (every 5 min) + idle tracker
   useEffect(() => {
     if (!isAuth || !token) return;

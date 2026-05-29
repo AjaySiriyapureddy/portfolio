@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       difficulty: sanitizeInput((body.difficulty || "Intermediate").trim()),
       category: sanitizeInput((body.category || "").trim()),
       platform: sanitizeInput((body.platform || "").trim()),
-      createdAt: new Date().toISOString().split("T")[0],
+      createdAt: new Date().toISOString(),
     };
 
     if (!entry.name || !entry.description) {

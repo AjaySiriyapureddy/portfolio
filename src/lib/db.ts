@@ -128,9 +128,14 @@ export interface Profile {
   resumeUrl: string;
 }
 
+// Sort by createdAt descending (newest first)
+function sortNewest<T extends { createdAt: string }>(items: T[]): T[] {
+  return items.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
 export const db = {
   projects: {
-    getAll: (): Project[] => readJson<Project[]>("projects.json"),
+    getAll: (): Project[] => sortNewest(readJson<Project[]>("projects.json")),
     getById: (id: string): Project | undefined =>
       readJson<Project[]>("projects.json").find((p) => p.id === id),
     create: (project: Project): void => {
@@ -178,7 +183,7 @@ export const db = {
     },
   },
   messages: {
-    getAll: (): ContactMessage[] => readJson<ContactMessage[]>("messages.json"),
+    getAll: (): ContactMessage[] => sortNewest(readJson<ContactMessage[]>("messages.json")),
     create: (msg: ContactMessage): void => {
       const messages = readJson<ContactMessage[]>("messages.json");
       messages.push(msg);
@@ -221,7 +226,7 @@ export const db = {
     },
   },
   ctf: {
-    getAll: (): CTFEntry[] => readJson<CTFEntry[]>("ctf.json"),
+    getAll: (): CTFEntry[] => sortNewest(readJson<CTFEntry[]>("ctf.json")),
     getById: (id: string): CTFEntry | undefined =>
       readJson<CTFEntry[]>("ctf.json").find((c) => c.id === id),
     create: (entry: CTFEntry): void => {
@@ -246,9 +251,9 @@ export const db = {
     },
   },
   blog: {
-    getAll: (): BlogPost[] => readJson<BlogPost[]>("blog.json"),
+    getAll: (): BlogPost[] => sortNewest(readJson<BlogPost[]>("blog.json")),
     getPublished: (): BlogPost[] =>
-      readJson<BlogPost[]>("blog.json").filter((b) => b.published),
+      sortNewest(readJson<BlogPost[]>("blog.json").filter((b) => b.published)),
     getById: (id: string): BlogPost | undefined =>
       readJson<BlogPost[]>("blog.json").find((b) => b.id === id),
     create: (post: BlogPost): void => {

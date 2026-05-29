@@ -1,11 +1,11 @@
 import nodemailer from "nodemailer";
-import type { Transporter } from "nodemailer";
 import { queueEmail } from "@/lib/firebase";
 
 // Lazy transporter — created on first use so Render env vars are guaranteed available
-let _transporter: Transporter | null = null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let _transporter: any = null;
 
-function getTransporter(): Transporter | null {
+function getTransporter(): ReturnType<typeof nodemailer.createTransport> | null {
   if (_transporter) return _transporter;
 
   const user = process.env.SMTP_USER;

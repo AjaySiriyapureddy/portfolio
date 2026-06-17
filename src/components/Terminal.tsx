@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, KeyboardEvent } from "react";
+import { useState, useRef, useEffect, useCallback, KeyboardEvent } from "react";
 
 interface TermLine {
   type: "input" | "output" | "error" | "system";
@@ -25,9 +25,32 @@ export default function Terminal({ isOpen, onClose }: { isOpen: boolean; onClose
   const [history, setHistory] = useState<string[]>([]);
   const [histIndex, setHistIndex] = useState(-1);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const dragRef = useRef<{ startX: number; startY: number; startPosX: number; startPosY: number } | null>(null);
+  const termRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [cwd, setCwd] = useState("~");
+
+  const onDragStart = useCallback((e: React.MouseEvent) => {
+    if (!termRef.current) return;
+    const rect = termRef.current.getBoundingClientRect();
+    dragRef.current = { startX: e.clientX, startY: e.clientY, startPosX: rect.left, startPosY: rect.top };
+    e.preventDefault();
+  }, []);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => {
+      if (!dragRef.current) return;
+      const dx = e.clientX - dragRef.current.startX;
+      const dy = e.clientY - dragRef.current.startY;
+      setPos({ x: dragRef.current.startPosX + dx, y: dragRef.current.startPosY + dy });
+    };
+    const onUp = () => { dragRef.current = null; };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
+  }, []);
 
   // Cached API data
   const cache = useRef<{
@@ -589,22 +612,31 @@ export default function Terminal({ isOpen, onClose }: { isOpen: boolean; onClose
     );
   }
 
+  const posStyle = pos
+    ? { position: "fixed" as const, left: pos.x, top: pos.y, bottom: "auto", right: "auto" }
+    : undefined;
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[60] md:bottom-6 md:right-6 md:left-auto md:w-[720px]">
+    <div
+      ref={termRef}
+      style={posStyle}
+      className={pos ? "z-[60] w-full md:w-[720px]" : "fixed bottom-0 left-0 right-0 z-[60] md:bottom-6 md:right-6 md:left-auto md:w-[720px]"}
+    >
       <div className="bg-[#0c0c0c] border border-gray-700/50 md:rounded-xl overflow-hidden shadow-2xl shadow-black/80">
-        {/* Title bar */}
-        <div className="flex items-center justify-between px-4 py-2 bg-[#1a1a1a] border-b border-gray-800/50">
+        {/* Title bar — drag handle */}
+        <div
+          onMouseDown={onDragStart}
+          className="flex items-center justify-between px-4 py-2 bg-[#1a1a1a] border-b border-gray-800/50 cursor-grab active:cursor-grabbing select-none"
+        >
           <div className="flex items-center gap-2">
-            <button onClick={onClose} className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-colors" aria-label="Close terminal" title="Close" />
-            <button onClick={() => setIsMinimized(true)} className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-colors" aria-label="Minimize" title="Minimize" />
+            <span className="w-3 h-3 rounded-full bg-red-500" />
+            <button onClick={() => setIsMinimized(true)} onMouseDown={e => e.stopPropagation()} className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-colors" aria-label="Minimize" title="Minimize" />
             <span className="w-3 h-3 rounded-full bg-green-500" />
           </div>
           <span className="text-gray-500 text-xs font-[family-name:var(--font-mono)]">
             root@ajaya: {cwd} — bash
           </span>
-          <button onClick={onClose} className="text-gray-600 hover:text-white text-xs font-[family-name:var(--font-mono)] transition-colors" title="Close terminal">
-            ✕
-          </button>
+          <span className="w-4" />
         </div>
 
         {/* Terminal output */}

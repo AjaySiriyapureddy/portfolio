@@ -1,54 +1,13 @@
-import nodemailer from "nodemailer";
 import { queueEmail } from "@/lib/firebase";
 
-// Lazy transporter — created on first use so Render env vars are guaranteed available
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let _transporter: any = null;
-
-function getTransporter(): ReturnType<typeof nodemailer.createTransport> | null {
-  if (_transporter) return _transporter;
-
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-
-  if (!user || !pass) {
-    console.warn("[EMAIL] SMTP_USER or SMTP_PASS not set — emails will not be sent");
-    return null;
-  }
-
-  const port = parseInt(process.env.SMTP_PORT || "465", 10);
-  const isSecure = port === 465;
-
-  _transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || "smtp.gmail.com",
-    port,
-    secure: isSecure,
-    auth: { user, pass },
-    tls: {
-      rejectUnauthorized: true,
-      minVersion: "TLSv1.2",
-    },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
-  });
-
-  console.log(`[EMAIL] SMTP transporter initialized for ${user}`);
-  return _transporter;
-}
-
-const FROM_NAME = "Portfolio Security";
-
-// Lazy getters — evaluated at call time, not module load
-function getFromEmail(): string {
-  return process.env.SMTP_USER || "noreply@portfolio.local";
-}
+const FROM_NAME = "Portfolio";
+const FROM_ADDRESS = "onboarding@resend.dev"; // replaced by custom domain once verified in Resend
 
 function getNotifyEmail(): string {
   return process.env.NOTIFY_EMAIL || process.env.WINER_EMAIL || "";
 }
 
-// Unified email sender: tries SMTP first, logs to Firebase as backup
+// Unified email sender via Resend HTTP API
 async function sendEmail(options: {
   to: string;
   subject: string;
@@ -57,7 +16,6 @@ async function sendEmail(options: {
   type: string;
   replyTo?: string;
 }): Promise<boolean> {
-  // Always log to Firebase as audit trail
   queueEmail({
     to: options.to,
     subject: options.subject,
@@ -66,29 +24,34 @@ async function sendEmail(options: {
     type: options.type,
   }).catch(() => {});
 
-  const transporter = getTransporter();
-  if (!transporter) {
-    console.log(`[EMAIL] SMTP not configured. Type: ${options.type}, Subject: ${options.subject}`);
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn("[EMAIL] RESEND_API_KEY not set — emails will not be sent");
     return false;
   }
 
   try {
-    const info = await transporter.sendMail({
-      from: `"${FROM_NAME}" <${getFromEmail()}>`,
-      to: sanitizeEmailHeader(options.to),
-      replyTo: options.replyTo ? sanitizeEmailHeader(options.replyTo) : undefined,
-      subject: sanitizeEmailHeader(options.subject),
+    const { Resend } = await import("resend");
+    const resend = new Resend(apiKey);
+
+    const payload: Parameters<typeof resend.emails.send>[0] = {
+      from: `${FROM_NAME} <${FROM_ADDRESS}>`,
+      to: [options.to],
+      subject: options.subject,
       text: options.text,
       html: options.html,
-    });
-    console.log(`[EMAIL] Sent: ${options.type} to ${options.to} (messageId: ${info.messageId})`);
+    };
+    if (options.replyTo) payload.replyTo = options.replyTo;
+
+    const { data, error } = await resend.emails.send(payload);
+    if (error) {
+      console.error(`[EMAIL] Resend error (${options.type}):`, error);
+      return false;
+    }
+    console.log(`[EMAIL] Sent via Resend: ${options.type} id=${data?.id}`);
     return true;
   } catch (error) {
     console.error(`[EMAIL] Failed (${options.type}):`, error);
-    // Reset transporter on auth/connection errors so it retries fresh
-    if (error instanceof Error && (error.message.includes("auth") || error.message.includes("ECONNREFUSED"))) {
-      _transporter = null;
-    }
     return false;
   }
 }

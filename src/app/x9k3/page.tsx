@@ -522,16 +522,19 @@ export default function SecurePanel() {
             <input placeholder="Skill Name" value={editSkillForm.name}
               onChange={(e) => setEditSkillForm({ ...editSkillForm, name: e.target.value })}
               className={inputClsEdit} />
-            <select value={editSkillForm.category}
+            <input list="skill-categories-edit" placeholder="Category (type or pick)" value={editSkillForm.category}
               onChange={(e) => setEditSkillForm({ ...editSkillForm, category: e.target.value })}
-              className={inputClsEdit}>
-              <option value="">Select Category</option>
-              <option value="Cybersecurity">Cybersecurity</option>
-              <option value="Security Tools">Security Tools</option>
-              <option value="Development">Development</option>
-              <option value="Business & Ops">Business &amp; Ops</option>
-              <option value="Other">Other</option>
-            </select>
+              className={inputClsEdit} />
+            <datalist id="skill-categories-edit">
+              <option value="Cybersecurity" />
+              <option value="Security Tools" />
+              <option value="Development" />
+              <option value="Business &amp; Ops" />
+              <option value="Networking" />
+              <option value="Cloud" />
+              <option value="DevOps" />
+              <option value="Other" />
+            </datalist>
           </div>
           <div className="flex items-center gap-4">
             <span className={`text-xs text-gray-500 ${mono} shrink-0`}>Proficiency</span>
@@ -695,16 +698,19 @@ export default function SecurePanel() {
                 <input placeholder="Skill Name" required value={newSkill.name}
                   onChange={(e) => setNewSkill({ ...newSkill, name: e.target.value })}
                   className={inputCls.replace("red-500", "green-500")} />
-                <select value={newSkill.category}
+                <input list="skill-categories-new" placeholder="Category (type or pick)" required value={newSkill.category}
                   onChange={(e) => setNewSkill({ ...newSkill, category: e.target.value })}
-                  className={inputCls.replace("red-500", "green-500")}>
-                  <option value="">Select Category</option>
-                  <option value="Cybersecurity">Cybersecurity</option>
-                  <option value="Security Tools">Security Tools</option>
-                  <option value="Development">Development</option>
-                  <option value="Business & Ops">Business &amp; Ops</option>
-                  <option value="Other">Other</option>
-                </select>
+                  className={inputCls.replace("red-500", "green-500")} />
+                <datalist id="skill-categories-new">
+                  <option value="Cybersecurity" />
+                  <option value="Security Tools" />
+                  <option value="Development" />
+                  <option value="Business &amp; Ops" />
+                  <option value="Networking" />
+                  <option value="Cloud" />
+                  <option value="DevOps" />
+                  <option value="Other" />
+                </datalist>
                 <div className="flex items-center gap-3">
                   <input type="range" min={0} max={100} value={newSkill.proficiency}
                     onChange={(e) => setNewSkill({ ...newSkill, proficiency: parseInt(e.target.value, 10) })}

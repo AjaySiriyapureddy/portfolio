@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { getFirestoreDb } from "./firebase";
+import { getAdminDb } from "./firebase";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -116,44 +116,40 @@ function sortNewest<T extends { createdAt: string }>(items: T[]): T[] {
   return [...items].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
 
-// ─── Firestore helpers ────────────────────────────────────────────────────────
+// ─── Firestore Admin helpers ──────────────────────────────────────────────────
 
 async function fsGetAll<T>(col: string): Promise<T[] | null> {
   try {
-    const fireDb = await getFirestoreDb();
-    if (!fireDb) return null;
-    const { collection, getDocs } = await import("firebase/firestore");
-    const snap = await getDocs(collection(fireDb, col));
+    const db = await getAdminDb();
+    if (!db) return null;
+    const snap = await db.collection(col).get();
     return snap.docs.map((d) => ({ id: d.id, ...d.data() } as T));
   } catch { return null; }
 }
 
 async function fsSet(col: string, id: string, data: Record<string, unknown>): Promise<boolean> {
   try {
-    const fireDb = await getFirestoreDb();
-    if (!fireDb) return false;
-    const { doc, setDoc } = await import("firebase/firestore");
-    await setDoc(doc(fireDb, col, id), data);
+    const db = await getAdminDb();
+    if (!db) return false;
+    await db.collection(col).doc(id).set(data);
     return true;
   } catch { return false; }
 }
 
 async function fsUpdate(col: string, id: string, data: Record<string, unknown>): Promise<boolean> {
   try {
-    const fireDb = await getFirestoreDb();
-    if (!fireDb) return false;
-    const { doc, updateDoc } = await import("firebase/firestore");
-    await updateDoc(doc(fireDb, col, id), data);
+    const db = await getAdminDb();
+    if (!db) return false;
+    await db.collection(col).doc(id).update(data);
     return true;
   } catch { return false; }
 }
 
 async function fsDelete(col: string, id: string): Promise<boolean> {
   try {
-    const fireDb = await getFirestoreDb();
-    if (!fireDb) return false;
-    const { doc, deleteDoc } = await import("firebase/firestore");
-    await deleteDoc(doc(fireDb, col, id));
+    const db = await getAdminDb();
+    if (!db) return false;
+    await db.collection(col).doc(id).delete();
     return true;
   } catch { return false; }
 }
@@ -161,15 +157,14 @@ async function fsDelete(col: string, id: string): Promise<boolean> {
 // Seed Firestore from JSON file if the collection is empty
 async function seedIfEmpty(col: string, filename: string): Promise<void> {
   try {
-    const fireDb = await getFirestoreDb();
-    if (!fireDb) return;
-    const { collection, getDocs, doc, setDoc } = await import("firebase/firestore");
-    const snap = await getDocs(collection(fireDb, col));
-    if (snap.size > 0) return; // already has data
+    const db = await getAdminDb();
+    if (!db) return;
+    const snap = await db.collection(col).get();
+    if (snap.size > 0) return;
     const items = readJsonFile<Array<Record<string, unknown>>>(filename);
     for (const item of items) {
-      const id = (item.id as string) || String(Math.random());
-      await setDoc(doc(fireDb, col, id), item);
+      const id = (item.id as string) || db.collection(col).doc().id;
+      await db.collection(col).doc(id).set(item);
     }
   } catch { /* silent */ }
 }
@@ -205,9 +200,7 @@ export const db = {
     },
     update: async (id: string, data: Partial<Project>): Promise<Project | null> => {
       const ok = await fsUpdate("projects", id, data as Record<string, unknown>);
-      if (ok) {
-        return (await db.projects.getById(id)) ?? null;
-      }
+      if (ok) return (await db.projects.getById(id)) ?? null;
       const items = readJsonFile<Project[]>("projects.json");
       const idx = items.findIndex((p) => p.id === id);
       if (idx === -1) return null;
@@ -398,11 +391,10 @@ export const db = {
   profile: {
     get: async (): Promise<Profile> => {
       try {
-        const fireDb = await getFirestoreDb();
-        if (fireDb) {
-          const { doc, getDoc } = await import("firebase/firestore");
-          const snap = await getDoc(doc(fireDb, "profile", "main"));
-          if (snap.exists()) return snap.data() as Profile;
+        const db = await getAdminDb();
+        if (db) {
+          const snap = await db.collection("profile").doc("main").get();
+          if (snap.exists) return snap.data() as Profile;
         }
       } catch { /* fallback */ }
       return readJsonFile<Profile>("profile.json");
@@ -410,8 +402,12 @@ export const db = {
     update: async (data: Partial<Profile>): Promise<Profile> => {
       const current = await db.profile.get();
       const updated = { ...current, ...data };
-      const ok = await fsSet("profile", "main", updated as unknown as Record<string, unknown>);
-      if (!ok) writeJsonFile("profile.json", updated);
+      const adminDb = await getAdminDb();
+      if (adminDb) {
+        await adminDb.collection("profile").doc("main").set(updated);
+      } else {
+        writeJsonFile("profile.json", updated);
+      }
       return updated;
     },
   },

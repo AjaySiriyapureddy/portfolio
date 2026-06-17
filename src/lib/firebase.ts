@@ -1,63 +1,52 @@
-// Firebase integration — gracefully handles missing/invalid keys
-// All functions are no-ops when Firebase is not configured
+// Firebase Admin SDK — server-side only, never exposed to the browser.
+// Requires FIREBASE_SERVICE_ACCOUNT_JSON env var (JSON string of service account key).
+// Falls back gracefully to null (JSON file storage) when not configured.
 
-import type { Firestore } from "firebase/firestore";
+import type { Firestore } from "firebase-admin/firestore";
 
 let _db: Firestore | null = null;
 let _initialized = false;
 
-export async function getFirestoreDb(): Promise<Firestore | null> {
+export async function getAdminDb(): Promise<Firestore | null> {
   if (_initialized) return _db;
   _initialized = true;
 
   try {
-    const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
-    const appId = process.env.NEXT_PUBLIC_FIREBASE_APP_ID;
+    const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+    if (!serviceAccountJson) return null;
 
-    if (!apiKey || !appId || apiKey.includes("*") || appId.includes("*") || apiKey.length < 20) {
-      return null;
+    const serviceAccount = JSON.parse(serviceAccountJson);
+
+    const { initializeApp, getApps, cert } = await import("firebase-admin/app");
+    const { getFirestore } = await import("firebase-admin/firestore");
+
+    if (getApps().length === 0) {
+      initializeApp({ credential: cert(serviceAccount) });
     }
 
-    const { initializeApp, getApps } = await import("firebase/app");
-    const { getFirestore } = await import("firebase/firestore");
-
-    const firebaseConfig = {
-      apiKey,
-      authDomain: "portfolio-cb3b6.firebaseapp.com",
-      projectId: "portfolio-cb3b6",
-      storageBucket: "portfolio-cb3b6.firebasestorage.app",
-      messagingSenderId: "496114221615",
-      appId,
-    };
-
-    const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-    _db = getFirestore(app);
+    _db = getFirestore();
     return _db;
   } catch {
     return null;
   }
 }
 
-/**
- * Queue an email via Firestore (for Firebase Trigger Email extension)
- */
 export async function queueEmail(data: {
   to: string;
   subject: string;
   text: string;
   html: string;
   type: string;
-}) {
+}): Promise<boolean> {
   try {
-    const fireDb = await getFirestoreDb();
-    if (!fireDb) return false;
-
-    const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
-    await addDoc(collection(fireDb, "mail"), {
+    const db = await getAdminDb();
+    if (!db) return false;
+    const { FieldValue } = await import("firebase-admin/firestore");
+    await db.collection("mail").add({
       to: data.to,
       message: { subject: data.subject, text: data.text, html: data.html },
       type: data.type,
-      createdAt: serverTimestamp(),
+      createdAt: FieldValue.serverTimestamp(),
       status: "pending",
     });
     return true;
@@ -66,21 +55,15 @@ export async function queueEmail(data: {
   }
 }
 
-/**
- * Log security events to Firestore
- */
-export async function logToFirestore(eventType: string, details: Record<string, unknown>) {
+export async function logToFirestore(eventType: string, details: Record<string, unknown>): Promise<void> {
   try {
-    const fireDb = await getFirestoreDb();
-    if (!fireDb) return;
-
-    const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
-    await addDoc(collection(fireDb, "security_logs"), {
+    const db = await getAdminDb();
+    if (!db) return;
+    const { FieldValue } = await import("firebase-admin/firestore");
+    await db.collection("security_logs").add({
       event: eventType,
       ...details,
-      createdAt: serverTimestamp(),
+      createdAt: FieldValue.serverTimestamp(),
     });
-  } catch {
-    // Silent fail
-  }
+  } catch { /* silent */ }
 }

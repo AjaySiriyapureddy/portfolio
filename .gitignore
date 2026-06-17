@@ -33,9 +33,11 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
-# Sensitive data files — NEVER commit these (contains password hashes, tokens)
+# Sensitive data files — NEVER commit these (contains password hashes, tokens, PII)
 data/admin.json
 data/admin.json.tmp
+data/messages.json
+data/messages.json.tmp
 
 # vercel
 .vercel

@@ -116,12 +116,7 @@ export async function POST(req: NextRequest) {
     logSecurityEvent("CONTACT_MESSAGE", { ip, email: "[redacted]" });
 
     // Send email notification (non-blocking)
-    sendContactNotification({
-      name: body.name.trim(),
-      email: body.email.trim(),
-      subject: body.subject.trim(),
-      message: body.message.trim(),
-    }).catch((err) => {
+    sendContactNotification({ name, email, subject, message }).catch((err) => {
       console.error("[EMAIL] Notification failed:", err);
     });
 

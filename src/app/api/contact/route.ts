@@ -27,8 +27,8 @@ export async function GET(req: NextRequest) {
   const authError = requireAuth(req);
   if (authError) return authError;
 
-  db.messages.purgeOld();
-  const messages = db.messages.getAll();
+  await db.messages.purgeOld();
+  const messages = await db.messages.getAll();
   return NextResponse.json(messages);
 }
 
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
       read: false,
     };
 
-    db.messages.create(contactMessage);
+    await db.messages.create(contactMessage);
     evictContactOldest();
     contactRateMap.set(ip, Date.now());
 
@@ -152,7 +152,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "Message ID is required" }, { status: 400 });
     }
 
-    const success = db.messages.markRead(id);
+    const success = await db.messages.markRead(id);
     if (!success) {
       return NextResponse.json({ error: "Message not found" }, { status: 404 });
     }
@@ -176,7 +176,7 @@ export async function DELETE(req: NextRequest) {
     );
   }
 
-  const deleted = db.messages.delete(id);
+  const deleted = await db.messages.delete(id);
   if (!deleted) {
     return NextResponse.json({ error: "Message not found" }, { status: 404 });
   }

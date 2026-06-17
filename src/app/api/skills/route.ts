@@ -5,7 +5,7 @@ import { sendContentChangeNotification } from "@/lib/email";
 import { v4 as uuidv4 } from "uuid";
 
 export async function GET() {
-  const skills = db.skills.getAll();
+  const skills = await db.skills.getAll();
   return NextResponse.json(skills);
 }
 
@@ -26,13 +26,10 @@ export async function POST(req: NextRequest) {
     };
 
     if (!skill.name || !skill.category) {
-      return NextResponse.json(
-        { error: "Name and category are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Name and category are required" }, { status: 400 });
     }
 
-    db.skills.create(skill);
+    await db.skills.create(skill);
     logSecurityEvent("SKILL_CREATED", { id: skill.id, ip: getClientIp(req) });
     sendContentChangeNotification({ action: "created", contentType: "Skill", title: skill.name, ip: getClientIp(req) }).catch(() => {});
     return NextResponse.json(skill, { status: 201 });
@@ -51,9 +48,7 @@ export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
     const { id, ...unsafeData } = body;
-    if (!id) {
-      return NextResponse.json({ error: "Skill ID is required" }, { status: 400 });
-    }
+    if (!id) return NextResponse.json({ error: "Skill ID is required" }, { status: 400 });
 
     const rawData = stripDangerousKeys(unsafeData);
     const data: Record<string, unknown> = {};
@@ -63,10 +58,8 @@ export async function PUT(req: NextRequest) {
       data.proficiency = Math.min(100, Math.max(0, parseInt(rawData.proficiency as string, 10) || 0));
     }
 
-    const updated = db.skills.update(id, data);
-    if (!updated) {
-      return NextResponse.json({ error: "Skill not found" }, { status: 404 });
-    }
+    const updated = await db.skills.update(id, data);
+    if (!updated) return NextResponse.json({ error: "Skill not found" }, { status: 404 });
 
     logSecurityEvent("SKILL_UPDATED", { id, ip: getClientIp(req) });
     sendContentChangeNotification({ action: "updated", contentType: "Skill", title: updated.name, ip: getClientIp(req) }).catch(() => {});
@@ -82,14 +75,11 @@ export async function DELETE(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
-  if (!id) {
-    return NextResponse.json({ error: "Skill ID is required" }, { status: 400 });
-  }
+  if (!id) return NextResponse.json({ error: "Skill ID is required" }, { status: 400 });
 
-  const deleted = db.skills.delete(id);
-  if (!deleted) {
-    return NextResponse.json({ error: "Skill not found" }, { status: 404 });
-  }
+  const deleted = await db.skills.delete(id);
+  if (!deleted) return NextResponse.json({ error: "Skill not found" }, { status: 404 });
+
   logSecurityEvent("SKILL_DELETED", { id, ip: getClientIp(req) });
   sendContentChangeNotification({ action: "deleted", contentType: "Skill", title: id, ip: getClientIp(req) }).catch(() => {});
   return NextResponse.json({ success: true });

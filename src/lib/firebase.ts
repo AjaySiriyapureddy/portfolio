@@ -1,12 +1,14 @@
 // Firebase integration — gracefully handles missing/invalid keys
 // All functions are no-ops when Firebase is not configured
 
-let db: ReturnType<typeof import("firebase/firestore").getFirestore> | null = null;
-let isInitialized = false;
+import type { Firestore } from "firebase/firestore";
 
-async function getDb() {
-  if (isInitialized) return db;
-  isInitialized = true;
+let _db: Firestore | null = null;
+let _initialized = false;
+
+export async function getFirestoreDb(): Promise<Firestore | null> {
+  if (_initialized) return _db;
+  _initialized = true;
 
   try {
     const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
@@ -29,8 +31,8 @@ async function getDb() {
     };
 
     const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-    db = getFirestore(app);
-    return db;
+    _db = getFirestore(app);
+    return _db;
   } catch {
     return null;
   }
@@ -47,7 +49,7 @@ export async function queueEmail(data: {
   type: string;
 }) {
   try {
-    const fireDb = await getDb();
+    const fireDb = await getFirestoreDb();
     if (!fireDb) return false;
 
     const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
@@ -69,7 +71,7 @@ export async function queueEmail(data: {
  */
 export async function logToFirestore(eventType: string, details: Record<string, unknown>) {
   try {
-    const fireDb = await getDb();
+    const fireDb = await getFirestoreDb();
     if (!fireDb) return;
 
     const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");

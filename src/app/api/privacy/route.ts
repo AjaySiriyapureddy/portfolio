@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const removed = db.messages.deleteByEmail(email);
+    const removed = await db.messages.deleteByEmail(email);
 
     logSecurityEvent("DPDPA_ERASURE_REQUEST", {
       ip: getClientIp(req),

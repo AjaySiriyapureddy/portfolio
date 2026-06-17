@@ -289,7 +289,7 @@ export default function Terminal({ isOpen, onClose }: { isOpen: boolean; onClose
         addMany([
           { type: "output", text: "" },
           { type: "system", text: "  ══════ CONTACT ══════" },
-          { type: "output", text: `  Email    : ${p?.email || "ajaysiriyapu@gmail.com"}` },
+          { type: "output", text: `  Email    : ${p?.email ? "[protected]" : "[not set]"}` },
           { type: "output", text: `  GitHub   : ${p?.social?.github || ""}` },
           { type: "output", text: `  LinkedIn : ${p?.social?.linkedin || ""}` },
           { type: "output", text: `  X        : ${p?.social?.twitter || ""}` },
@@ -440,7 +440,7 @@ export default function Terminal({ isOpen, onClose }: { isOpen: boolean; onClose
     if (file === "contact.txt" || fullPath === "contact.txt") {
       const p = await ensureProfile();
       addMany([
-        { type: "output", text: `Email   : ${p?.email || "ajaysiriyapu@gmail.com"}` },
+        { type: "output", text: `Email   : ${p?.email ? "[protected]" : "[not set]"}` },
         { type: "output", text: `GitHub  : ${p?.social?.github || ""}` },
         { type: "output", text: `LinkedIn: ${p?.social?.linkedin || ""}` },
         { type: "output", text: `X       : ${p?.social?.twitter || ""}` },

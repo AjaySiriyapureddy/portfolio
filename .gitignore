@@ -45,4 +45,7 @@ data/messages.json.tmp
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-portfolio-cb3b6-firebase-adminsdk-fbsvc-1d22236f4c.json
+# Firebase service account keys (any project)
+*-firebase-adminsdk-*.json
+firebase-adminsdk*.json
+serviceAccountKey*.json

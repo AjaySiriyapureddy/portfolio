@@ -57,10 +57,16 @@ export function getClientIp(req: NextRequest): string {
     if (realIp) return realIp;
   }
 
-  // Default: use connection-level header or fallback
-  // Without trusted proxy, x-real-ip is still set by hosting platforms (Vercel, etc.)
-  // but NOT by end users — it's set at the infrastructure level
-  return req.headers.get("x-real-ip") || "127.0.0.1";
+  // x-real-ip is set by nginx/Vercel at infrastructure level (not spoofable by users)
+  const realIp = req.headers.get("x-real-ip");
+  if (realIp) return realIp;
+
+  // x-forwarded-for is set by Render/most cloud platforms even without TRUSTED_PROXY.
+  // Take only the first entry (the actual client) — subsequent entries are proxies.
+  const forwarded = req.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0].trim();
+
+  return "127.0.0.1";
 }
 
 export function rateLimit(req: NextRequest): NextResponse | null {

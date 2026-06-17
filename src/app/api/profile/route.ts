@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireAuth, sanitizeInput, validateUrl, logSecurityEvent, getClientIp } from "@/lib/security";
+import { sendContentChangeNotification } from "@/lib/email";
 
 export async function GET() {
   const profile = await db.profile.get();
@@ -50,8 +51,10 @@ export async function PUT(req: NextRequest) {
     }
     if (body.avatar) sanitized.avatar = sanitizeInput(body.avatar);
 
+    const ip = getClientIp(req);
     const updated = await db.profile.update(sanitized);
-    logSecurityEvent("PROFILE_UPDATED", { ip: getClientIp(req) });
+    logSecurityEvent("PROFILE_UPDATED", { ip });
+    sendContentChangeNotification({ action: "updated", contentType: "Profile", title: (sanitized.name as string) || "profile", ip }).catch(() => {});
     return NextResponse.json(updated);
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });

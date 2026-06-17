@@ -284,6 +284,36 @@ export async function sendContentChangeNotification(details: {
   });
 }
 
+/**
+ * Admin login success alert
+ */
+export async function sendAdminLoginAlert(ip: string): Promise<boolean> {
+  const notifyEmail = getNotifyEmail();
+  if (!notifyEmail) return false;
+
+  return sendEmail({
+    to: notifyEmail,
+    subject: "[Portfolio] Admin Login — New Session",
+    type: "admin_login",
+    text: `Admin panel login\n\nIP: ${ip}\nTime: ${new Date().toISOString()}\n\nIf this wasn't you, change your password immediately.`,
+    html: `
+      <div style="font-family: monospace; background: #0a0a0a; color: #e0e0e0; padding: 30px; border-radius: 8px; max-width: 600px;">
+        <div style="border-bottom: 1px solid #22c55e; padding-bottom: 15px; margin-bottom: 20px;">
+          <h2 style="color: #22c55e; margin: 0;">&#128275; Admin Login</h2>
+          <p style="color: #666; font-size: 12px; margin: 5px 0 0 0;">Portfolio Admin Panel</p>
+        </div>
+        <div style="padding: 15px; background: #111; border: 1px solid #222; border-radius: 6px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+            <tr><td style="color: #22c55e; padding: 5px 15px 5px 0;">IP Address:</td><td style="color: #e0e0e0;">${esc(ip)}</td></tr>
+            <tr><td style="color: #22c55e; padding: 5px 15px 5px 0;">Time:</td><td style="color: #e0e0e0;">${new Date().toISOString()}</td></tr>
+          </table>
+        </div>
+        <p style="color: #ef4444; font-size: 12px; margin-top: 15px;">If this wasn't you, change your password immediately.</p>
+      </div>
+    `,
+  });
+}
+
 function esc(str: string): string {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }

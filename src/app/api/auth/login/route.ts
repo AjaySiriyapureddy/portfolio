@@ -7,7 +7,7 @@ import {
   getClientIp,
 } from "@/lib/security";
 import { verifyWinerCredentials } from "@/lib/password";
-import { sendSuspiciousActivityAlert } from "@/lib/email";
+import { sendSuspiciousActivityAlert, sendAdminLoginAlert } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   const limited = rateLimit(req);
@@ -48,6 +48,7 @@ export async function POST(req: NextRequest) {
     }
 
     logSecurityEvent("LOGIN_SUCCESS", { ip, email });
+    sendAdminLoginAlert(ip).catch(() => {});
     const token = generateToken({ email, role: "admin" });
 
     return NextResponse.json({ token, expiresIn: "2h" });

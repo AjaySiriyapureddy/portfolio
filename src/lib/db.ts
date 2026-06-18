@@ -154,28 +154,6 @@ async function fsDelete(col: string, id: string): Promise<boolean> {
   } catch { return false; }
 }
 
-// Seed Firestore from JSON file if the collection is empty
-async function seedIfEmpty(col: string, filename: string): Promise<void> {
-  try {
-    const db = await getAdminDb();
-    if (!db) return;
-    const snap = await db.collection(col).get();
-    if (snap.size > 0) return;
-    const items = readJsonFile<Array<Record<string, unknown>>>(filename);
-    for (const item of items) {
-      const id = (item.id as string) || db.collection(col).doc().id;
-      await db.collection(col).doc(id).set(item);
-    }
-  } catch { /* silent */ }
-}
-
-// Run seed on first import (non-blocking)
-Promise.all([
-  seedIfEmpty("projects", "projects.json"),
-  seedIfEmpty("skills", "skills.json"),
-  seedIfEmpty("ctf", "ctf.json"),
-  seedIfEmpty("blog", "blog.json"),
-]).catch(() => {});
 
 // ─── db API (all async) ───────────────────────────────────────────────────────
 

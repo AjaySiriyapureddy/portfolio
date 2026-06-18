@@ -1,18 +1,1 @@
-[
-  { "id": "1", "name": "VAPT", "category": "Cybersecurity", "proficiency": 90 },
-  { "id": "2", "name": "Red Teaming", "category": "Cybersecurity", "proficiency": 85 },
-  { "id": "3", "name": "Penetration Testing", "category": "Cybersecurity", "proficiency": 88 },
-  { "id": "4", "name": "OWASP Top 10", "category": "Cybersecurity", "proficiency": 92 },
-  { "id": "5", "name": "Burp Suite", "category": "Security Tools", "proficiency": 88 },
-  { "id": "6", "name": "Nmap / Wireshark", "category": "Security Tools", "proficiency": 85 },
-  { "id": "7", "name": "Metasploit", "category": "Security Tools", "proficiency": 80 },
-  { "id": "8", "name": "Kali Linux", "category": "Security Tools", "proficiency": 90 },
-  { "id": "9", "name": "Python", "category": "Development", "proficiency": 85 },
-  { "id": "10", "name": "JavaScript / TypeScript", "category": "Development", "proficiency": 80 },
-  { "id": "11", "name": "Next.js / React", "category": "Development", "proficiency": 78 },
-  { "id": "12", "name": "Node.js", "category": "Development", "proficiency": 80 },
-  { "id": "13", "name": "ODOO / ERP", "category": "Business & Ops", "proficiency": 85 },
-  { "id": "14", "name": "CRM Administration", "category": "Business & Ops", "proficiency": 88 },
-  { "id": "15", "name": "Business Development", "category": "Business & Ops", "proficiency": 90 },
-  { "id": "16", "name": "Technical Documentation", "category": "Business & Ops", "proficiency": 85 }
-]
+[]

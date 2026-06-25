@@ -12,6 +12,7 @@ const jetbrains = JetBrains_Mono({
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
+  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   title: "Ajaya Siriyapureddy | Security Analyst & Developer",
   description:
     "Portfolio of Ajaya Siriyapureddy — Business Development, Developer, Security Analyst & Researcher. Specializing in VAPT, Red Teaming, and secure application development.",

@@ -66,6 +66,31 @@ export interface Profile {
   resumeUrl: string;
 }
 
+export interface BugHuntEngagement {
+  id: string;
+  name: string;
+  scopeText: string;
+  outOfScopeText: string;
+  scopeIn: string[];
+  scopeOut: string[];
+  createdAt: string;
+}
+
+export interface BugHuntJob {
+  id: string;
+  engagementId: string;
+  moduleId: string;
+  target: string;
+  params: Record<string, string>;
+  status: "queued" | "running" | "completed" | "failed" | "rejected";
+  scopeVerdict: "in_scope" | "out_of_scope";
+  logText: string;
+  resultJson: Record<string, unknown> | null;
+  startedAt: string | null;
+  finishedAt: string | null;
+  createdAt: string;
+}
+
 // ─── Local JSON fallback (dev / no Firebase) ─────────────────────────────────
 
 const dataDir = path.join(process.cwd(), "data");
@@ -75,6 +100,7 @@ if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 const VALID_FILES = new Set([
   "projects.json", "skills.json", "messages.json",
   "profile.json", "admin.json", "ctf.json", "blog.json",
+  "bughunt_engagements.json", "bughunt_jobs.json",
 ]);
 
 const DEFAULTS: Record<string, string> = {
@@ -83,6 +109,8 @@ const DEFAULTS: Record<string, string> = {
   "messages.json": "[]",
   "ctf.json": "[]",
   "blog.json": "[]",
+  "bughunt_engagements.json": "[]",
+  "bughunt_jobs.json": "[]",
   "profile.json": JSON.stringify({
     name: "Ajaya Siriyapureddy",
     title: "Security Analyst & Researcher",
@@ -387,6 +415,60 @@ export const db = {
         writeJsonFile("profile.json", updated);
       }
       return updated;
+    },
+  },
+
+  bugHuntEngagements: {
+    getAll: async (): Promise<BugHuntEngagement[]> => {
+      const rows = await fsGetAll<BugHuntEngagement>("bugHuntEngagements");
+      if (rows) return sortNewest(rows);
+      return sortNewest(readJsonFile<BugHuntEngagement[]>("bughunt_engagements.json"));
+    },
+    getById: async (id: string): Promise<BugHuntEngagement | undefined> => {
+      const all = await db.bugHuntEngagements.getAll();
+      return all.find((e) => e.id === id);
+    },
+    create: async (engagement: BugHuntEngagement): Promise<void> => {
+      const ok = await fsSet("bugHuntEngagements", engagement.id, engagement as unknown as Record<string, unknown>);
+      if (!ok) {
+        const items = readJsonFile<BugHuntEngagement[]>("bughunt_engagements.json");
+        items.push(engagement);
+        writeJsonFile("bughunt_engagements.json", items);
+      }
+    },
+  },
+
+  bugHuntJobs: {
+    getAll: async (): Promise<BugHuntJob[]> => {
+      const rows = await fsGetAll<BugHuntJob>("bugHuntJobs");
+      if (rows) return sortNewest(rows);
+      return sortNewest(readJsonFile<BugHuntJob[]>("bughunt_jobs.json"));
+    },
+    getById: async (id: string): Promise<BugHuntJob | undefined> => {
+      const all = await db.bugHuntJobs.getAll();
+      return all.find((j) => j.id === id);
+    },
+    getByEngagement: async (engagementId: string): Promise<BugHuntJob[]> => {
+      const all = await db.bugHuntJobs.getAll();
+      return all.filter((j) => j.engagementId === engagementId);
+    },
+    create: async (job: BugHuntJob): Promise<void> => {
+      const ok = await fsSet("bugHuntJobs", job.id, job as unknown as Record<string, unknown>);
+      if (!ok) {
+        const items = readJsonFile<BugHuntJob[]>("bughunt_jobs.json");
+        items.push(job);
+        writeJsonFile("bughunt_jobs.json", items);
+      }
+    },
+    update: async (id: string, data: Partial<BugHuntJob>): Promise<BugHuntJob | null> => {
+      const ok = await fsUpdate("bugHuntJobs", id, data as Record<string, unknown>);
+      if (ok) return (await db.bugHuntJobs.getById(id)) ?? null;
+      const items = readJsonFile<BugHuntJob[]>("bughunt_jobs.json");
+      const idx = items.findIndex((j) => j.id === id);
+      if (idx === -1) return null;
+      items[idx] = { ...items[idx], ...data };
+      writeJsonFile("bughunt_jobs.json", items);
+      return items[idx];
     },
   },
 };

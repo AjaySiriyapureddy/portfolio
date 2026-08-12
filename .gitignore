@@ -39,6 +39,13 @@ data/admin.json.tmp
 data/messages.json
 data/messages.json.tmp
 
+# Bug Hunting tool runtime state (local JSON fallback when Firestore isn't
+# configured) — real engagement/scan data, not source, never committed.
+data/bughunt_engagements.json
+data/bughunt_engagements.json.tmp
+data/bughunt_jobs.json
+data/bughunt_jobs.json.tmp
+
 # vercel
 .vercel
 

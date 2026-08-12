@@ -2,6 +2,7 @@
 
 import { useState, useEffect, FormEvent, useCallback } from "react";
 import Link from "next/link";
+import BugHuntPanel from "@/components/BugHuntPanel";
 
 interface Project {
   id: string;
@@ -178,7 +179,7 @@ export default function SecurePanel() {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotStatus, setForgotStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [forgotMsg, setForgotMsg] = useState("");
-  const [tab, setTab] = useState<"projects" | "skills" | "ctf" | "blog" | "messages" | "security">("projects");
+  const [tab, setTab] = useState<"projects" | "skills" | "ctf" | "blog" | "messages" | "security" | "bughunt">("projects");
   const [changePw, setChangePw] = useState({ current: "", newPw: "", confirm: "" });
   const [changePwStatus, setChangePwStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [changePwMsg, setChangePwMsg] = useState("");
@@ -475,7 +476,7 @@ export default function SecurePanel() {
     );
   }
 
-  const tabs = ["projects", "skills", "ctf", "blog", "messages", "security"] as const;
+  const tabs = ["projects", "skills", "ctf", "blog", "messages", "security", "bughunt"] as const;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -1001,6 +1002,9 @@ export default function SecurePanel() {
             </div>
           </div>
         )}
+
+        {/* ═══════ BUG HUNTING TAB ═══════ */}
+        {tab === "bughunt" && <BugHuntPanel authHeaders={authHeaders} />}
       </div>
     </div>
   );

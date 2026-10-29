@@ -8,6 +8,7 @@ import BlogSection from "@/components/BlogSection";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import MatrixBackground from "@/components/MatrixBackground";
+import CommunitySection from "@/components/CommunitySection";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <div className="relative z-10">
         <Navbar />
         <Hero />
+        <CommunitySection />
         <Projects />
         <Skills />
         <VAPTSection />

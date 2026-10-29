@@ -21,7 +21,8 @@ export default function Hero() {
       .catch(() => {});
   }, []);
 
-  const fullText = profile?.title || "Security Analyst & Developer";
+  const rawTitle = profile?.title || "Security Analyst & Developer";
+  const fullText = rawTitle.replace(/^(Business Dev\s*\|\s*Developer\s*\|\s*)/i, "").trim();
 
   useEffect(() => {
     if (!fullText) return;

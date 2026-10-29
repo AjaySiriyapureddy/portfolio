@@ -13,7 +13,7 @@
   {
     "id": "proj-thezoo-malware-repo",
     "title": "theZoo — Live Malware Repository",
-    "description": "Open malware database designed to make malware analysis accessible to security researchers. Provides a CLI-driven interface to browse, search, and retrieve live malware samples and source code (binaries and reversed source) in an organized, encrypted format for safe educational research and threat intelligence work.",
+    "description": "Open malware database designed to make malware analysis accessible to security researchers. Provides a CLI-driven interface to browse, search, and retrieve live malware samples and source code in an organized, encrypted format for safe educational research and threat intelligence work.",
     "image": "/projects/default.svg",
     "tags": ["Python", "SQLite", "Malware Research", "Threat Intelligence", "Security"],
     "liveUrl": "",
@@ -35,12 +35,56 @@
   {
     "id": "proj-invoke-atomicredteam",
     "title": "Invoke-AtomicRedTeam",
-    "description": "PowerShell module for executing MITRE ATT&CK atomic tests across Windows, macOS, and Linux environments. Enables security teams to run controlled adversary simulations against their own infrastructure to validate detection, alerting, and incident response capabilities. Works alongside EDR/SIEM tooling to measure coverage against known attack techniques.",
+    "description": "PowerShell module for executing MITRE ATT&CK atomic tests across Windows, macOS, and Linux environments. Enables security teams to run controlled adversary simulations against their own infrastructure to validate detection, alerting, and incident response capabilities.",
     "image": "/projects/default.svg",
     "tags": ["PowerShell", "MITRE ATT&CK", "Red Team", "EDR Validation", "Windows Security"],
     "liveUrl": "",
     "githubUrl": "",
     "featured": false,
     "createdAt": "2024-04-01T00:00:00.000Z"
+  },
+  {
+    "id": "proj-malware-analysis-sandbox",
+    "title": "Malware Analysis Sandbox",
+    "description": "Python-based automated sandbox for analyzing malware behavior in a secure, isolated environment. Tracks file system changes, registry modifications, and network activity during controlled execution. Integrates with Cuckoo Sandbox and VirtualBox/VMware to automate sample submission, monitoring, and comprehensive behavioral report generation.",
+    "image": "/projects/default.svg",
+    "tags": ["Python", "Cuckoo Sandbox", "Malware Analysis", "Wireshark", "VirtualBox"],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2024-05-01T00:00:00.000Z"
+  },
+  {
+    "id": "proj-google-cybersecurity-cert",
+    "title": "Google Cybersecurity Certificate Labs",
+    "description": "Hands-on labs and projects from the Google Cybersecurity Professional Certificate covering security audits, network defense, incident response, and SIEM operations. Includes practical work with Wireshark, tcpdump, Suricata IDS, Splunk, and Chronicle SIEM for threat detection and packet analysis.",
+    "image": "/projects/default.svg",
+    "tags": ["SIEM", "Splunk", "Suricata", "Wireshark", "Incident Response"],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": false,
+    "createdAt": "2024-06-01T00:00:00.000Z"
+  },
+  {
+    "id": "proj-linux-kernel-exploits",
+    "title": "Linux Kernel Exploit Research (FUZE)",
+    "description": "Research into Linux kernel Use-After-Free vulnerabilities using the FUZE framework — a tool combining critical information extraction, context-aware kernel fuzzing, and partial symbolic execution to facilitate kernel exploit generation. Dependencies include angr, pwntools, ROPGadget, and KASAN for dynamic analysis.",
+    "image": "/projects/default.svg",
+    "tags": ["Python", "Kernel Security", "Exploit Development", "angr", "pwntools"],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2024-07-01T00:00:00.000Z"
+  },
+  {
+    "id": "proj-red-vs-blue-team",
+    "title": "Red vs Blue Team Assessment",
+    "description": "Full-cycle security engagement combining offensive and defensive operations. Red Team phase covered reconnaissance, exploitation, and root access against a vulnerable target VM. Blue Team phase used Kibana to analyze attack logs, extract indicators of compromise, build visualizations, and produce hardening recommendations aligned with Security+ domains.",
+    "image": "/projects/default.svg",
+    "tags": ["Red Team", "Blue Team", "Kibana", "Penetration Testing", "SOC Analysis"],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2024-08-01T00:00:00.000Z"
   }
 ]

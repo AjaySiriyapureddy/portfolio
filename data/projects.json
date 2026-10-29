@@ -1,1 +1,46 @@
-[]
+[
+  {
+    "id": "proj-android-malware-ml",
+    "title": "Android Malware ML Classifier",
+    "description": "Automated pipeline for gathering Android malware samples, training machine learning models on extracted feature vectors, and plotting classification accuracy. Supports multiple feature extraction strategies — XML-based permissions, system call traces, disassembled API calls, and ssdeep fuzzy hashes — with TensorFlow neural networks and scikit-learn SVM/decision tree alternatives.",
+    "image": "/projects/default.svg",
+    "tags": ["Python", "TensorFlow", "Machine Learning", "Android Security", "Malware Analysis"],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2024-01-15T00:00:00.000Z"
+  },
+  {
+    "id": "proj-thezoo-malware-repo",
+    "title": "theZoo — Live Malware Repository",
+    "description": "Open malware database designed to make malware analysis accessible to security researchers. Provides a CLI-driven interface to browse, search, and retrieve live malware samples and source code (binaries and reversed source) in an organized, encrypted format for safe educational research and threat intelligence work.",
+    "image": "/projects/default.svg",
+    "tags": ["Python", "SQLite", "Malware Research", "Threat Intelligence", "Security"],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2024-02-10T00:00:00.000Z"
+  },
+  {
+    "id": "proj-goart-atomic-red-team",
+    "title": "GoART — Atomic Red Team Executor",
+    "description": "Standalone Go application that packages MITRE ATT&CK atomic test definitions directly into the binary for execution in air-gapped or internet-restricted environments. Executes atomic tests across Windows, macOS, and Linux, enabling adversary simulation without external dependencies. Supports local test development by loading custom atomics from a local directory.",
+    "image": "/projects/default.svg",
+    "tags": ["Go", "MITRE ATT&CK", "Red Team", "Adversary Simulation", "Cross-Platform"],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": false,
+    "createdAt": "2024-03-05T00:00:00.000Z"
+  },
+  {
+    "id": "proj-invoke-atomicredteam",
+    "title": "Invoke-AtomicRedTeam",
+    "description": "PowerShell module for executing MITRE ATT&CK atomic tests across Windows, macOS, and Linux environments. Enables security teams to run controlled adversary simulations against their own infrastructure to validate detection, alerting, and incident response capabilities. Works alongside EDR/SIEM tooling to measure coverage against known attack techniques.",
+    "image": "/projects/default.svg",
+    "tags": ["PowerShell", "MITRE ATT&CK", "Red Team", "EDR Validation", "Windows Security"],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": false,
+    "createdAt": "2024-04-01T00:00:00.000Z"
+  }
+]

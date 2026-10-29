@@ -77,6 +77,17 @@
     "createdAt": "2024-07-01T00:00:00.000Z"
   },
   {
+    "id": "proj-bh-malware-traffic-analysis",
+    "title": "Black Hat India 2026 — Advanced Malware Traffic Analysis",
+    "description": "Intensive hands-on training at Black Hat India 2026 covering end-to-end malware traffic analysis. Worked through 8 modules spanning networking fundamentals, traffic methodology using Wireshark/tcpdump/tshark/Zeek, threat intelligence with OSINT, ransomware detection, live exploit traffic analysis (CVE-2021-41773 Apache RCE), NetFlow/SIEM hunting in Splunk, and ML-based anomaly detection using Slips and Zeek Anomaly Detector.",
+    "image": "/projects/default.svg",
+    "tags": ["Wireshark", "Zeek", "Splunk", "SIEM", "Malware Analysis", "Threat Intelligence", "MITRE ATT&CK", "Network Forensics"],
+    "liveUrl": "",
+    "githubUrl": "",
+    "featured": true,
+    "createdAt": "2026-10-01T00:00:00.000Z"
+  },
+  {
     "id": "proj-red-vs-blue-team",
     "title": "Red vs Blue Team Assessment",
     "description": "Full-cycle security engagement combining offensive and defensive operations. Red Team phase covered reconnaissance, exploitation, and root access against a vulnerable target VM. Blue Team phase used Kibana to analyze attack logs, extract indicators of compromise, build visualizations, and produce hardening recommendations aligned with Security+ domains.",

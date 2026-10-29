@@ -1,1 +1,34 @@
-[]
+[
+  {
+    "id": "malware-traffic-analysis-methodology",
+    "title": "Malware Traffic Analysis: A Structured Methodology",
+    "excerpt": "At Black Hat India 2026, I worked through an intensive hands-on training on Advanced Malware Traffic Analysis. Here's the core methodology I took away — from defining the goal, building a high-level timeline, filtering noise with tcpdump and Wireshark, leveraging threat intelligence, all the way to producing actionable conclusions. Whether you're an incident responder or a SOC analyst, a structured approach beats gut instinct every time.",
+    "date": "2026-10-15",
+    "tags": ["Malware Analysis", "Wireshark", "tcpdump", "Incident Response", "Methodology"],
+    "readTime": "8 min"
+  },
+  {
+    "id": "zeek-netflow-threat-hunting",
+    "title": "Threat Hunting with Zeek NetFlow and Splunk",
+    "excerpt": "Full-packet captures are expensive to store and analyze at scale. Zeek (formerly Bro) solves this by transforming raw traffic into structured logs — conn.log, dns.log, ssl.log, and more. In this writeup I walk through how to generate Zeek files from a PCAP, filter noise from conn.log, apply MITRE ATT&CK TTPs inside Splunk (T1046 network discovery, T1021.002 SMB lateral movement), and use the PCR (Producer-Consumer Ratio) to surface suspicious data flows.",
+    "date": "2026-10-18",
+    "tags": ["Zeek", "Splunk", "Threat Hunting", "SIEM", "MITRE ATT&CK", "NetFlow"],
+    "readTime": "10 min"
+  },
+  {
+    "id": "ml-anomaly-detection-malware",
+    "title": "Machine Learning for Malware Detection: Zeek Anomaly Detector and Slips",
+    "excerpt": "When you have too many flows to inspect manually, machine learning can prioritize what matters. I explored two tools from the Stratosphere Laboratory: Zeek Anomaly Detector (PCA-based anomaly scoring on conn.log) and Slips (a full ML-based NIDS with P2P threat sharing). Key insight — ML doesn't replace analysis skills, it ranks what to look at first. Understanding your baseline, your features, and the tool's limits is essential before trusting any alert.",
+    "date": "2026-10-22",
+    "tags": ["Machine Learning", "Anomaly Detection", "Slips", "Zeek", "Malware Analysis", "NIDS"],
+    "readTime": "7 min"
+  },
+  {
+    "id": "apache-cve-2021-41773-traffic-analysis",
+    "title": "CVE-2021-41773 Apache Path Traversal — Attack and Traffic Forensics",
+    "excerpt": "At Black Hat India, we exploited CVE-2021-41773 (Apache path traversal + RCE via mod_cgi) in a live lab, then switched sides to analyze the resulting PCAP as defenders. The attacker perspective: encoding '.' as %2e bypasses the parser, /cgi-bin/../../../../../bin/sh gives a shell. The defender perspective: look for %2e patterns in HTTP requests, filter dst port 80, count unique IPs attempting the exploit. Both angles are necessary for writing effective detection rules.",
+    "date": "2026-10-25",
+    "tags": ["CVE-2021-41773", "Apache", "RCE", "VAPT", "Traffic Analysis", "Exploit"],
+    "readTime": "9 min"
+  }
+]
